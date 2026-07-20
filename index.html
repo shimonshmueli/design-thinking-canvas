@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design Thinking Canvas — Double Diamond</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="app-header">
+  <div class="header-top">
+    <input id="project-title" class="project-title" type="text" value="Untitled Project" spellcheck="false">
+    <div class="header-actions">
+      <button id="open-settings" class="btn btn-ghost" title="Your name, LLM provider, and API key">⚙ Settings</button>
+      <button id="export-json" class="btn btn-ghost" title="Save canvas as a .json file">Export</button>
+      <button id="import-json" class="btn btn-ghost" title="Load a previously exported .json file">Import</button>
+      <input id="import-file" type="file" accept="application/json" hidden>
+      <button id="print-canvas" class="btn btn-ghost" title="Print / save as PDF">Print</button>
+      <button id="clear-canvas" class="btn btn-danger" title="Delete every card">Clear</button>
+    </div>
+  </div>
+  <p class="app-subtitle">Double Diamond &amp; Design Thinking Methods — Discover → Define → Ideate → Make → Evaluate → Develop → Reflect &amp; Improve</p>
+  <nav class="process-nav" aria-label="Process stages">
+    <a class="pn-home pn-active" href="index.html">◉ Canvas</a>
+    <a class="pn-step pn-discover" href="stages/discover.html"><span class="pn-num">1</span>Discover</a>
+    <a class="pn-step pn-define" href="stages/define.html"><span class="pn-num">2</span>Define</a>
+    <a class="pn-step pn-ideate" href="stages/ideate.html"><span class="pn-num">3</span>Ideate</a>
+    <a class="pn-step pn-make" href="stages/make.html"><span class="pn-num">4</span>Make</a>
+    <a class="pn-step pn-evaluate" href="stages/evaluate.html"><span class="pn-num">5</span>Evaluate</a>
+    <a class="pn-step pn-develop" href="stages/develop.html"><span class="pn-num">6</span>Develop</a>
+    <a class="pn-step pn-reflect" href="stages/reflect.html"><span class="pn-num">7</span>Reflect</a>
+  </nav>
+</header>
+
+<main class="page">
+
+  <!-- ============ CHALLENGE ============ -->
+  <section class="challenge">
+    <h3 class="section-label">Challenge — the starting point (C)</h3>
+    <div class="challenge-box">
+      <p class="foundation-caption">State the challenge you're taking on — the territory the whole process explores.
+      <strong>You must write it yourself.</strong> The AI can only help rephrase what you wrote to remove ambiguity;
+      it will not invent or expand your challenge.</p>
+      <textarea id="challenge-statement" placeholder="e.g. Help elderly patients who manage multiple prescriptions at home avoid medication errors"></textarea>
+      <div class="assist-actions">
+        <button type="button" class="btn btn-add" id="challenge-rephrase">✦ Rephrase for clarity</button>
+        <span class="assist-status" id="challenge-status"></span>
+      </div>
+      <div id="challenge-suggestions"></div>
+    </div>
+  </section>
+
+  <!-- ============ FOUNDATIONS ============ -->
+  <section class="foundations">
+    <h3 class="section-label">Foundations</h3>
+    <div class="foundations-grid">
+
+      <div class="foundation-box">
+        <h4>Challenge selection criteria</h4>
+        <p class="foundation-caption">Does the challenge fit our <a href="#" class="term" data-term="values">values</a>,
+        <a href="#" class="term" data-term="objectives">objectives</a>,
+        <a href="#" class="term" data-term="role">role</a>, business…?
+        (<a href="#" class="term" data-term="swot">SWOT</a>)</p>
+        <textarea id="foundation-challenge" placeholder="Notes on why this challenge was selected…"></textarea>
+      </div>
+
+      <div class="foundation-box">
+        <h4><a href="#" class="term" data-term="themes">Themes / product category</a></h4>
+        <p class="foundation-caption">The territory this challenge sits in.</p>
+        <input id="foundation-themes" type="text" placeholder="e.g. home energy, elder care, onboarding…">
+      </div>
+
+      <div class="foundation-box">
+        <h4>Thinking modes</h4>
+        <div class="thinking-modes">
+          <div>
+            <a href="#" class="mode-label mode-divergent term" data-term="divergent">Divergent</a>
+            <p>Analysis, exploring, generating, collecting, imagining, expanding scope, discovering, splitting</p>
+          </div>
+          <div>
+            <a href="#" class="mode-label mode-convergent term" data-term="convergent">Convergent</a>
+            <p>Synthesis, reduction (filtering out), evaluation (addition), combinations/merging, abstractions, sensemaking, clustering, categorizing</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="foundation-box">
+        <h4>Topics that feed the process</h4>
+        <ul class="feeder-list">
+          <li>Problem solving</li>
+          <li><a href="#" class="term" data-term="creativity">Creativity</a>: new and useful</li>
+          <li><a href="#" class="term" data-term="innovation">Innovation</a>: new and brought to market (deployed)</li>
+          <li>Discipline-based thinking: medical, engineering, manufacturing, business…</li>
+          <li><a href="#" class="term" data-term="systems-thinking">Systems thinking</a>: structure, behaviors, requirements, complexity, holism, emergence, boundaries, feedback…</li>
+          <li><a href="#" class="term" data-term="computational-thinking">Computational thinking</a></li>
+          <li><a href="#" class="term" data-term="strategic-thinking">Strategic thinking</a></li>
+          <li><a href="#" class="term" data-term="intrapreneurship">Intra/entrepreneurship</a></li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ DIAMOND FLOW GUIDE ============ -->
+  <section class="flow-guide">
+    <svg class="diamond-guide" viewBox="0 0 1000 150" preserveAspectRatio="none" aria-hidden="true">
+      <polygon points="0,75 250,15 500,75 250,135" class="diamond-shape diamond-1"></polygon>
+      <polygon points="500,75 750,15 1000,75 750,135" class="diamond-shape diamond-2"></polygon>
+      <line x1="500" y1="15" x2="500" y2="135" class="diamond-divider"></line>
+      <text x="125" y="78" class="diamond-text">Discover</text>
+      <text x="375" y="78" class="diamond-text">Define</text>
+      <text x="625" y="78" class="diamond-text">Ideate</text>
+      <text x="875" y="78" class="diamond-text">Make</text>
+      <circle cx="0" cy="75" r="12" class="flow-dot dot-c"></circle>
+      <text x="0" y="79" class="dot-label">C</text>
+      <circle cx="500" cy="75" r="12" class="flow-dot dot-pd"></circle>
+      <text x="500" y="79" class="dot-label">PD</text>
+      <circle cx="1000" cy="75" r="12" class="flow-dot dot-sc"></circle>
+      <text x="1000" y="79" class="dot-label">SC</text>
+    </svg>
+
+    <div class="phase-space-bands">
+      <span class="band band-1">Phase 1 — problem space: exploring &amp; defining</span>
+      <span class="band band-2">Phase 2 — solution space: exploring &amp; making</span>
+    </div>
+
+    <div class="post-diamond-flow">
+      <span class="flow-chip chip-sc">SC</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-chip chip-evaluate">Evaluate</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-chip chip-develop">Develop <em>(viability · feasibility · desirability)</em></span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-chip chip-reflect">Reflect &amp; Improve</span>
+    </div>
+  </section>
+
+  <!-- ============ BOARD (populated by app.js) ============ -->
+  <section class="board-wrap">
+    <h3 class="section-label">Canvas</h3>
+    <div class="board" id="board"></div>
+  </section>
+
+  <!-- ============ CROSS-CUTTING SUMMARY ============ -->
+  <section class="summary-strip">
+    <div><strong>Approach:</strong> zooming-in-out, optimizing/satisficing/maximizing (rarely), reflective, empathic, human-centric, experiential, calculated risk, balanced, embodiment, exploratory, strategic, what-if, proactive…</div>
+    <div><strong>Attitudes / mindsets:</strong> optimism, tackle hard/wicked problems, collaboration, failure allowed (reflected on and corrected), playful, intra/entrepreneurial, creative confidence, bias to action, rethink (and possibly break) rules…</div>
+    <div><strong>Thinking:</strong> systems, holistic, divergent/convergent, cross-disciplinary</div>
+  </section>
+
+</main>
+
+<footer class="app-footer">
+  <span id="save-status">Saved locally in this browser</span>
+</footer>
+
+<script src="store.js"></script>
+<script src="llm.js"></script>
+<script src="settings.js"></script>
+<script src="glossary.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

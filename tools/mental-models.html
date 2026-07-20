@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mental Models — Design Thinking Canvas</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body class="doc-body">
+<header class="app-header doc-header">
+  <nav class="breadcrumb"><a href="../index.html">Canvas</a> <span>›</span> <a href="../stages/discover.html">Discover</a> <span>›</span> <strong>Mental Models</strong></nav>
+  <nav class="process-nav" aria-label="Process stages"><a class="pn-home" href="../index.html">◉ Canvas</a><a class="pn-step pn-discover pn-active" href="../stages/discover.html"><span class="pn-num">1</span>Discover</a><a class="pn-step pn-define" href="../stages/define.html"><span class="pn-num">2</span>Define</a><a class="pn-step pn-ideate" href="../stages/ideate.html"><span class="pn-num">3</span>Ideate</a><a class="pn-step pn-make" href="../stages/make.html"><span class="pn-num">4</span>Make</a><a class="pn-step pn-evaluate" href="../stages/evaluate.html"><span class="pn-num">5</span>Evaluate</a><a class="pn-step pn-develop" href="../stages/develop.html"><span class="pn-num">6</span>Develop</a><a class="pn-step pn-reflect" href="../stages/reflect.html"><span class="pn-num">7</span>Reflect</a></nav>
+</header>
+<main class="doc">
+
+<article class="doc-article" data-phase="discover" data-tool="mental-models">
+  <span class="phase-tag">Discover · tool / method</span>
+  <h1>Mental Models</h1>
+  <h2>What it is</h2>
+  <p>The internal explanations users carry about how something works — often incomplete or wrong relative to how the system actually works, but decisive for their behavior. A design that fights the user's mental model produces constant errors; one that matches it feels intuitive. Understanding the gap between the user's model and the system's model is a core Discover finding.</p>
+  <h2>How to use it</h2>
+  <ol><li>Ask users to explain or draw how they think the thing works.</li><li>Watch for errors and hesitations — they mark where the model and reality diverge.</li><li>Compare the user's model, the designer's model, and the system's actual behavior.</li><li>Record the user's vocabulary; their words for things reveal their model's structure.</li></ol>
+  <h2>Watch out for</h2>
+  <p>Correcting the user's model instead of learning from it. In Discover, a 'wrong' mental model is data, not a problem to fix.</p>
+  <section class="workspace" id="workspace">
+    <h2>Worksheet</h2>
+    <p class="workspace-hint">Apply Mental Models to your project and capture what you find.
+    Entries are saved in your browser, appear under "From tool worksheets" on the Discover page,
+    feed the AI context there, and can be sent up as Discover stage cards.</p>
+    <form id="card-form" class="card-form">
+      <textarea placeholder="Add a finding, data point, or question to pursue…" required></textarea>
+      <button type="submit" class="btn btn-add">+ Add entry</button>
+    </form>
+    <div id="card-list" class="card-list"></div>
+  </section>
+  <nav class="doc-nav"><a href="user-journeys.html">← Customer / User Journeys</a><a href="competitive-analysis.html">Competitive Analysis →</a></nav>
+</article>
+</main>
+<script src="../store.js"></script>
+<script src="../llm.js"></script>
+<script src="../glossary.js"></script>
+<script src="../tool.js"></script>
+<footer class="app-footer">
+  <a href="../index.html">Design Thinking Canvas</a> — Double Diamond tutorial
+</footer>
+</body>
+</html>

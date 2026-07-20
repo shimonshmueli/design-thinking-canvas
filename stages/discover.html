@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Discover — Design Thinking Canvas</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body class="doc-body">
+<header class="app-header doc-header">
+  <nav class="breadcrumb"><a href="../index.html">Canvas</a> <span>›</span> <strong>Discover</strong></nav>
+  <nav class="process-nav" aria-label="Process stages"><a class="pn-home" href="../index.html">◉ Canvas</a><a class="pn-step pn-discover pn-active" href="../stages/discover.html"><span class="pn-num">1</span>Discover</a><a class="pn-step pn-define" href="../stages/define.html"><span class="pn-num">2</span>Define</a><a class="pn-step pn-ideate" href="../stages/ideate.html"><span class="pn-num">3</span>Ideate</a><a class="pn-step pn-make" href="../stages/make.html"><span class="pn-num">4</span>Make</a><a class="pn-step pn-evaluate" href="../stages/evaluate.html"><span class="pn-num">5</span>Evaluate</a><a class="pn-step pn-develop" href="../stages/develop.html"><span class="pn-num">6</span>Develop</a><a class="pn-step pn-reflect" href="../stages/reflect.html"><span class="pn-num">7</span>Reflect</a></nav>
+</header>
+<main class="doc">
+
+<article class="doc-article" data-phase="discover">
+  <span class="phase-tag">Stage 1 · Divergent · Problem space</span>
+  <h1>Discover</h1>
+  <p class="doc-tagline">Research &amp; empathy — explore the problem widely before deciding what it is.</p>
+  <p>Discover is the first, divergent half of the problem-space diamond. You enter it with a <strong>Challenge</strong> — a broad territory the team has chosen to work in — and your job is to resist solving anything yet. Instead, you go wide: talk to users and stakeholders, observe real behavior in real contexts, question assumptions, and collect raw material about what is actually going on.</p>
+<p>The thinking modes here are exploratory: collecting, imagining, expanding scope, splitting problems apart. Both secondary research (what's already known — literature, market data, prior studies) and primary research (what you learn firsthand — interviews, observation, immersion) belong here. The quality of everything downstream depends on the honesty and breadth of this stage.</p>
+  <div class="doc-io">
+    <div><h3>Comes in</h3><p>A selected Challenge (C) — screened against your values, objectives, role, and business fit (e.g., via SWOT).</p></div>
+    <div><h3>Goes out</h3><p>A rich, unfiltered pool of observations, quotes, artifacts, and insights — the raw material Define will make sense of.</p></div>
+  </div>
+  
+  
+  <h2>Tools &amp; methods for this stage</h2>
+<div class="tool-grid">
+<a class="tool-card" href="../tools/users-stakeholders.html"><h3>Users &amp; Stakeholders</h3><p>Mapping everyone the problem touches: primary users, secondary users, buyers, operators, regulators, and anyone else with a stake in the outcome.</p></a>
+<a class="tool-card" href="../tools/empathy-methods.html"><h3>Empathy Methods &amp; Tools</h3><p>Techniques for understanding users&#x27; experiences from the inside rather than at a distance: empathy by simulation (recreating the user&#x27;s conditions — e.g., wearing vision-impairment glasses), by immersion (living the experience yourself for a period), or by action (doing the user&#x27;s tasks alongside them).</p></a>
+<a class="tool-card" href="../tools/contexts.html"><h3>Contexts</h3><p>Studying where and when the problem occurs: the physical environment, the social setting, the workflow around it, the time pressures, the devices and tools present.</p></a>
+<a class="tool-card" href="../tools/qualitative-research.html"><h3>Qualitative Research</h3><p>Structured firsthand inquiry: contextual inquiry (interviewing users while they work, in their environment, letting their actions drive the questions) and ethnography (extended observation of people in their natural setting).</p></a>
+<a class="tool-card" href="../tools/user-journeys.html"><h3>Customer / User Journeys</h3><p>A visual map of the user&#x27;s end-to-end experience across time: the stages they pass through, the actions they take, the touchpoints they hit, and how they feel at each step.</p></a>
+<a class="tool-card" href="../tools/mental-models.html"><h3>Mental Models</h3><p>The internal explanations users carry about how something works — often incomplete or wrong relative to how the system actually works, but decisive for their behavior.</p></a>
+<a class="tool-card" href="../tools/competitive-analysis.html"><h3>Competitive Analysis</h3><p>A systematic look at how existing solutions — direct competitors, substitutes, and workarounds — address the problem space today.</p></a>
+</div>
+  
+  <section class="workspace" id="workspace">
+    <h2>Workspace</h2>
+    <p class="workspace-hint">Do the actual work of this stage here. Cards are saved in your browser and summarized on the main canvas page.</p>
+    <form id="card-form" class="card-form">
+      <textarea placeholder="Add an observation or insight…" required></textarea>
+      <button type="submit" class="btn btn-add">+ Add card</button>
+    </form>
+    <div id="card-list" class="card-list"></div>
+  </section>
+  <nav class="doc-nav"><a href="../index.html">← Canvas</a><a href="define.html">Define →</a></nav>
+</article>
+</main>
+<script src="../store.js"></script>
+<script src="../llm.js"></script>
+<script src="../glossary.js"></script>
+<script src="../stage.js"></script>
+<footer class="app-footer">
+  <a href="../index.html">Design Thinking Canvas</a> — Double Diamond tutorial
+</footer>
+</body>
+</html>
