@@ -21,6 +21,10 @@
           <input id="set-name" type="text" placeholder="e.g. Dana" autocomplete="name">
         </label>
 
+        <label class="settings-field">About yourself <span class="settings-opt">(free form — used to personalize copied LLM prompts)</span>
+          <textarea id="set-about" rows="3" placeholder="e.g. Industrial design undergrad, comfortable with sketching, new to business strategy; learning design thinking for a product course."></textarea>
+        </label>
+
         <h3 class="settings-subhead">AI assistant — bring your own key</h3>
 
         <label class="settings-field">Provider
@@ -74,6 +78,7 @@
     overlay.querySelector("#settings-save").addEventListener("click", () => {
       const cfg = loadLLMConfig();
       cfg.name = overlay.querySelector("#set-name").value.trim();
+      cfg.about = overlay.querySelector("#set-about").value.trim();
       cfg.provider = providerSel.value;
       cfg.model = modelInput.value.trim();
       cfg.key = keyInput.value.trim();
@@ -103,6 +108,7 @@
     const cfg = loadLLMConfig();
     const overlay = document.getElementById("settings-modal");
     overlay.querySelector("#set-name").value = cfg.name || "";
+    overlay.querySelector("#set-about").value = cfg.about || "";
     const providerSel = overlay.querySelector("#set-provider");
     providerSel.value = cfg.provider || "anthropic";
     const p = LLM_PROVIDERS[providerSel.value];

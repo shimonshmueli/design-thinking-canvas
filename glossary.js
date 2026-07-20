@@ -170,23 +170,24 @@ const GLOSSARY = {
 
 /* ---------------- modal ---------------- */
 
-function glossaryChallenge() {
+function glossaryAbout() {
   try {
-    const s = JSON.parse(localStorage.getItem("design-thinking-canvas-v2"));
-    return (s && typeof s.challenge === "string" && s.challenge.trim()) || "";
+    const cfg = JSON.parse(localStorage.getItem("dtc-llm-config-v1"));
+    return (cfg && typeof cfg.about === "string" && cfg.about.trim()) || "";
   } catch {
     return "";
   }
 }
 
 function glossaryPrompt(entry) {
-  const challenge = glossaryChallenge();
+  const about = glossaryAbout();
   return (
-    "I'm a student working through a design thinking project using the Double Diamond process " +
+    "I'm learning design thinking and the Double Diamond process " +
     "(Discover, Define, Ideate, Make, Evaluate, Develop, Reflect)." +
-    (challenge ? ` My challenge is: "${challenge}".` : "") +
+    (about ? ` About me: ${about}.` : "") +
     ` Explain "${entry.title}" in this context: what it is, why it matters in the Double Diamond process, ` +
-    "how I would apply it to my project step by step, common pitfalls, and one concrete worked example. " +
+    "how I would apply it step by step, common pitfalls, and one concrete worked example" +
+    (about ? " suited to my background" : "") + ". " +
     "End with 2–3 reputable sources I can read to go deeper. Where you are uncertain, say so explicitly."
   );
 }
@@ -245,7 +246,7 @@ function openGlossary(termId) {
         <button type="button" class="btn" id="glossary-copy-text">Copy explanation</button>
         <button type="button" class="btn" id="glossary-copy-prompt">Copy LLM prompt</button>
       </div>
-      <p class="llm-note">"Copy LLM prompt" gives you a ready-made prompt${glossaryChallenge() ? " (including your challenge)" : ""} to paste into your LLM for a deeper, project-specific explanation.</p>
+      <p class="llm-note">"Copy LLM prompt" gives you a ready-made prompt to paste into your LLM for a deeper explanation${glossaryAbout() ? ", personalized from the About yourself notes in your Settings" : ' — fill in "About yourself" in Settings to personalize it'}.</p>
     </div>
   `;
 

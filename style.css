@@ -541,6 +541,24 @@ body {
   font-style: italic;
 }
 
+/* ---------- Report page ---------- */
+
+.report-actions { margin: 18px 0; }
+
+.report-output textarea {
+  width: 100%;
+  min-height: 380px;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 12.5px;
+  line-height: 1.55;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+  resize: vertical;
+  margin-top: 10px;
+}
+
 /* ---------- Summary strip ---------- */
 
 .summary-strip {
@@ -616,6 +634,7 @@ body {
 .pn-evaluate { --pn: var(--evaluate); }
 .pn-develop  { --pn: var(--develop); }
 .pn-reflect  { --pn: var(--reflect); }
+.pn-report   { --pn: var(--ink); }
 
 .pn-step {
   border-color: color-mix(in srgb, var(--pn) 35%, white);
@@ -707,7 +726,13 @@ body {
 
 .settings-opt { font-weight: 400; }
 
+.settings-field textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
 .settings-field input,
+.settings-field textarea,
 .settings-field select {
   font: inherit;
   font-weight: 400;

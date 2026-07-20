@@ -72,7 +72,7 @@ async function llmComplete(system, user) {
       },
       body: JSON.stringify({
         model,
-        max_tokens: 1500,
+        max_tokens: 6000,
         system,
         messages: [{ role: "user", content: user }],
       }),
