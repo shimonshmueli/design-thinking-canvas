@@ -145,6 +145,7 @@
 
   settingsButtons().forEach((b) => b.addEventListener("click", window.openSettings));
   updateButtons();
+  window.updateSettingsButtons = updateButtons;
 
   // Deep link: stage pages link to index.html#settings when no key is configured.
   if (location.hash === "#settings") window.openSettings();

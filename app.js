@@ -55,6 +55,25 @@ function init() {
 
   document.getElementById("challenge-rephrase").addEventListener("click", rephraseChallenge);
 
+  document.getElementById("facilitate-btn").addEventListener("click", facilitateSelection);
+
+  // Challenge selection worksheet fields (ids sel-<key> map to state.selection keys).
+  Object.keys(state.selection).forEach((k) => {
+    const el = document.getElementById(`sel-${k}`);
+    if (!el) return;
+    el.value = state.selection[k];
+    el.addEventListener("input", () => {
+      state.selection[k] = el.value;
+      persist();
+    });
+    if (el.tagName === "SELECT") {
+      el.addEventListener("change", () => {
+        state.selection[k] = el.value;
+        persist();
+      });
+    }
+  });
+
   titleInput.addEventListener("input", () => {
     state.title = titleInput.value;
     persist();
@@ -80,7 +99,6 @@ function init() {
     }
   });
 
-  document.getElementById("print-canvas").addEventListener("click", () => window.print());
   document.getElementById("export-json").addEventListener("click", exportJSON);
 
   const importInput = document.getElementById("import-file");
@@ -100,7 +118,80 @@ function refreshFromStorage() {
   challengeInput.value = state.foundations.challenge;
   themesInput.value = state.foundations.themes;
   challengeStatement.value = state.challenge;
+  Object.keys(state.selection).forEach((k) => {
+    const el = document.getElementById(`sel-${k}`);
+    if (el) el.value = state.selection[k];
+  });
   renderAll();
+}
+
+/** Facilitation only: the LLM reads the worksheet and asks questions back.
+ *  It must not suggest, recommend, or evaluate — the thinking stays with the team. */
+async function facilitateSelection() {
+  const statusEl = document.getElementById("facilitate-status");
+  const listEl = document.getElementById("facilitate-questions");
+  listEl.innerHTML = "";
+  statusEl.classList.remove("assist-error");
+
+  const sel = state.selection;
+  const anyInput = state.challenge.trim() || sel.background.trim() ||
+    ["values", "objectives", "role", "strengths", "weaknesses", "opportunities", "threats"].some((k) => sel[k].trim());
+  if (!anyInput) {
+    statusEl.classList.add("assist-error");
+    statusEl.textContent = "Fill in the challenge and at least part of the worksheet first — the facilitator can only ask about what you wrote.";
+    return;
+  }
+  if (!llmConfigured()) {
+    statusEl.classList.add("assist-error");
+    statusEl.innerHTML = 'No API key configured — add one in <a href="#" onclick="openSettings();return false;">Settings</a>.';
+    return;
+  }
+
+  const btn = document.getElementById("facilitate-btn");
+  btn.disabled = true;
+  statusEl.textContent = "Reading your worksheet…";
+  try {
+    const labels = {
+      background: "Team/personal background", values: "Fit with values", objectives: "Fit with objectives",
+      role: "Fit with role & capabilities", strengths: "SWOT Strengths", weaknesses: "SWOT Weaknesses",
+      opportunities: "SWOT Opportunities", threats: "SWOT Threats", reflections: "Team reflections so far",
+    };
+    const lines = [`Challenge (user-authored): ${state.challenge.trim() || "(not written yet)"}`];
+    Object.entries(labels).forEach(([k, label]) => {
+      if (sel[k].trim()) lines.push(`${label}: ${sel[k].trim()}`);
+    });
+
+    const system =
+      "You are a strictly neutral design-thinking facilitator helping a team decide whether to accept, scope down, " +
+      "or reject a challenge. HARD RULES: you only ask questions. You never give suggestions, advice, opinions, " +
+      "evaluations, or answers — not even disguised as questions ('have you considered X?' embeds a suggestion; " +
+      "don't do that). Good facilitator questions point at tensions, gaps, and unexamined assumptions in what the " +
+      "team itself wrote, and are answerable only by the team.";
+    const user =
+      lines.join("\n") +
+      "\n\nAsk the team 3–5 short questions that could make them think or rethink before deciding. " +
+      "Each question must be grounded in something specific they wrote (or conspicuously didn't write). " +
+      "No advice, no options, no evaluations — questions only. Respond with ONLY a JSON array of strings.";
+
+    const text = await llmComplete(system, user);
+    const questions = llmExtractJSON(text);
+    if (!Array.isArray(questions) || questions.length === 0) throw new Error("Unexpected response format.");
+
+    questions.map(String).forEach((q) => {
+      const li = document.createElement("li");
+      li.textContent = q;
+      listEl.appendChild(li);
+    });
+    statusEl.textContent = "Discuss as a team, capture your thinking in the reflections box — then decide.";
+  } catch (err) {
+    statusEl.classList.add("assist-error");
+    statusEl.textContent =
+      err instanceof TypeError
+        ? "The request never reached the provider. If you opened this page as a local file, serve the folder (python3 -m http.server)."
+        : err.message;
+  } finally {
+    btn.disabled = false;
+  }
 }
 
 /** LLM assistance for the challenge is rephrasing ONLY — the user must author it. */
@@ -205,6 +296,24 @@ function buildBoard() {
 
 function renderAll() {
   PHASES.forEach(renderSummary);
+  renderReportCTA();
+}
+
+function renderReportCTA() {
+  const cta = document.getElementById("report-cta");
+  if (!cta) return;
+  const cards = PHASES.reduce((n, p) => n + state.cards[p].length, 0);
+  const entries = PHASES.reduce((n, p) => n + toolsForPhase(state, p).reduce((m, t) => m + t.cards.length, 0), 0);
+  const stagesWithData = PHASES.filter((p) => state.cards[p].length || toolsForPhase(state, p).length).length;
+  if (cards + entries >= 5) {
+    document.getElementById("report-cta-text").textContent =
+      `Your project has ${cards} card${cards === 1 ? "" : "s"}` +
+      (entries ? ` and ${entries} tool entr${entries === 1 ? "y" : "ies"}` : "") +
+      ` across ${stagesWithData} stage${stagesWithData === 1 ? "" : "s"} — compile it into a report.`;
+    cta.hidden = false;
+  } else {
+    cta.hidden = true;
+  }
 }
 
 function renderSummary(phase) {
@@ -262,7 +371,21 @@ function flashSaveStatus(msg, isError = false) {
 }
 
 function exportJSON() {
-  const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+  // Complete canvas export: all project state plus user settings — except the API key.
+  const cfg = loadLLMConfig();
+  const payload = {
+    _format: "design-thinking-canvas-export-v1",
+    schemaVersion: 2,
+    exported: new Date().toISOString(),
+    ...state,
+    settings: {
+      name: cfg.name || "",
+      about: cfg.about || "",
+      provider: cfg.provider || "",
+      model: cfg.model || "",
+    },
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   const safeName = (state.title || "canvas").trim().replace(/[^a-z0-9\-_ ]/gi, "").replace(/\s+/g, "-") || "canvas";
@@ -279,12 +402,24 @@ function importJSON(e) {
   reader.onload = () => {
     try {
       const parsed = JSON.parse(reader.result);
+      if (typeof parsed.schemaVersion === "number" && parsed.schemaVersion > 2) {
+        if (!confirm("This export was made by a newer version of the canvas — some data may not import. Continue?")) {
+          e.target.value = "";
+          return;
+        }
+      }
       state = normalizeState(parsed);
-      titleInput.value = state.title;
-      challengeInput.value = state.foundations.challenge;
-      themesInput.value = state.foundations.themes;
+      // Restore user settings if present in the export — never touches the stored API key.
+      if (parsed.settings && typeof parsed.settings === "object") {
+        const cfg = loadLLMConfig();
+        ["name", "about", "provider", "model"].forEach((k) => {
+          if (typeof parsed.settings[k] === "string") cfg[k] = parsed.settings[k];
+        });
+        saveLLMConfig(cfg);
+        if (window.updateSettingsButtons) window.updateSettingsButtons();
+      }
       persist();
-      renderAll();
+      refreshFromStorage();
     } catch (err) {
       alert("That file doesn't look like a valid canvas export.");
     }

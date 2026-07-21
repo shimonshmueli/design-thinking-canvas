@@ -168,6 +168,10 @@ function initAssist() {
     statusEl.innerHTML =
       'No API key yet — set your name, provider, and key in ' +
       '<a href="../index.html#settings">Settings on the Canvas page</a>.';
+  } else if (!llmUserName() && !(loadLLMConfig().about || "").trim()) {
+    statusEl.innerHTML =
+      'Tip: add your name and a line about yourself in ' +
+      '<a href="../index.html#settings">Settings</a> to personalize AI help.';
   }
 
   panel
@@ -226,6 +230,9 @@ function toolContext() {
   const name = llmUserName();
   if (name) lines.push(`Student: ${name}`);
   if (state.challenge.trim()) lines.push(`Challenge (user-authored): ${state.challenge.trim()}`);
+  if (operativeChallenge(state) !== state.challenge.trim()) {
+    lines.push(`Scoped-down challenge (the operative one): ${operativeChallenge(state)}`);
+  }
   if (state.foundations.themes) lines.push(`Theme / product category: ${state.foundations.themes}`);
 
   const briefFilled = BRIEF_FIELDS.filter(([k]) => state.brief[k].trim());
@@ -249,6 +256,14 @@ function toolContext() {
 }
 
 async function suggest(statusEl, suggestionsEl) {
+  if (["ideate", "make", "evaluate", "develop"].includes(phase) && !briefStarted(state)) {
+    statusEl.classList.add("assist-error");
+    statusEl.innerHTML =
+      "The AI won't help in the solution space until the first diamond is closed — " +
+      'write your <a href="../stages/define.html#brief">Problem Definition on the Define page</a> first. ' +
+      "You can still add entries manually.";
+    return;
+  }
   statusEl.textContent = "Contacting your LLM…";
   statusEl.classList.remove("assist-error");
   suggestionsEl.innerHTML = "";

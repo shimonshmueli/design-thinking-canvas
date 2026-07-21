@@ -11,6 +11,7 @@ const BRIEF_FIELDS = [
   ["users", "Users & stakeholders"],
   ["needs", "Needs, wants, aspirations"],
   ["pov", "Solution point-of-view (approach)"],
+  ["hmw", "How might we…? (HMW)"],
   ["objectives", "Objectives & constraints"],
   ["success", "Success criteria"],
 ];
@@ -22,10 +23,20 @@ function emptyState() {
     title: "Untitled Project",
     challenge: "",
     foundations: { challenge: "", themes: "" },
+    // Challenge selection worksheet: fit assessment, SWOT, and the accept/scope/reject decision.
+    selection: {
+      background: "",
+      values: "", objectives: "", role: "",
+      strengths: "", weaknesses: "", opportunities: "", threats: "",
+      reflections: "",
+      decision: "", scoped: "",
+    },
     brief: Object.fromEntries(BRIEF_KEYS.map((k) => [k, ""])),
     cards: Object.fromEntries(PHASES.map((p) => [p, []])),
     // Per-tool worksheets: { [slug]: { phase, title, cards: [{id,text,created}] } }
     tools: {},
+    // Evaluation plan: rows tying brief criteria to methods and measured results.
+    evalPlan: [],
   };
 }
 
@@ -35,12 +46,26 @@ function normalizeState(parsed) {
   base.challenge = typeof parsed.challenge === "string" ? parsed.challenge : "";
   base.foundations.challenge = typeof parsed.foundations?.challenge === "string" ? parsed.foundations.challenge : "";
   base.foundations.themes = typeof parsed.foundations?.themes === "string" ? parsed.foundations.themes : "";
+  Object.keys(base.selection).forEach((k) => {
+    if (typeof parsed.selection?.[k] === "string") base.selection[k] = parsed.selection[k];
+  });
   BRIEF_KEYS.forEach((k) => {
     if (typeof parsed.brief?.[k] === "string") base.brief[k] = parsed.brief[k];
   });
   PHASES.forEach((p) => {
     if (Array.isArray(parsed.cards?.[p])) base.cards[p] = parsed.cards[p];
   });
+  if (Array.isArray(parsed.evalPlan)) {
+    base.evalPlan = parsed.evalPlan
+      .filter((r) => r && typeof r === "object")
+      .map((r) => ({
+        id: String(r.id || crypto.randomUUID()),
+        criterion: String(r.criterion || ""),
+        method: String(r.method || ""),
+        metric: String(r.metric || ""),
+        result: String(r.result || ""),
+      }));
+  }
   if (parsed.tools && typeof parsed.tools === "object") {
     Object.entries(parsed.tools).forEach(([slug, t]) => {
       if (t && PHASES.includes(t.phase) && Array.isArray(t.cards)) {
@@ -92,6 +117,17 @@ function persistState(state) {
 
 function newCard(text) {
   return { id: crypto.randomUUID(), text, created: new Date().toISOString() };
+}
+
+/** The operative challenge: the scoped-down subset when one was chosen, else the original. */
+function operativeChallenge(state) {
+  if (state.selection.decision === "subset" && state.selection.scoped.trim()) return state.selection.scoped.trim();
+  return state.challenge.trim();
+}
+
+/** True once any brief field has content — the first diamond has begun closing. */
+function briefStarted(state) {
+  return BRIEF_KEYS.some((k) => state.brief[k].trim());
 }
 
 /** Tool worksheets belonging to a phase that have at least one entry. */

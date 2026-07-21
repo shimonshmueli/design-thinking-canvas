@@ -51,6 +51,7 @@ const GLOSSARY = {
     body: [
       "Thinking that expands the option space: generating many possibilities, exploring, collecting, imagining, deferring judgment. The first half of each diamond (Discover, Ideate) is divergent — the goal is breadth and surprise, not correctness.",
       "The term comes from J.P. Guilford's research on creativity (1950s), contrasting divergent production (many answers) with convergent production (one right answer).",
+      "A terminology caution: this canvas follows the systems-engineering tradition, which lists <em>analysis</em> (breaking a problem into parts) among divergent moves because decomposition expands what you're looking at. Most design and HCI texts instead treat analysis as convergent (evaluating and filtering) and reserve divergence for generating options. Both readings are coherent — just know which one a given book is using.",
     ],
     refs: [
       ["Wikipedia — Divergent thinking", "https://en.wikipedia.org/wiki/Divergent_thinking"],
@@ -62,6 +63,7 @@ const GLOSSARY = {
     body: [
       "Thinking that narrows toward decisions: synthesizing, filtering, clustering, merging, abstracting, choosing. The second half of each diamond (Define, Make) is convergent — the goal is a committed, well-argued selection: a problem definition, then a solution concept.",
       "Good convergence is criteria-driven (traceable to needs and objectives), not just picking the favorite in the room.",
+      "A terminology caution: this canvas lists <em>synthesis</em> (combining parts into a whole) among convergent moves, following the systems-engineering tradition — combining reduces many pieces to one. Much of the design literature flips this, calling idea-generation 'synthesis' and treating it as divergent. Both are defensible; check which convention your other sources use.",
     ],
     refs: [["Wikipedia — Convergent thinking", "https://en.wikipedia.org/wiki/Convergent_thinking"]],
   },
@@ -118,6 +120,30 @@ const GLOSSARY = {
     ],
     refs: [["Wikipedia — Innovation", "https://en.wikipedia.org/wiki/Innovation"]],
   },
+  "c-marker": {
+    title: "C — the Challenge",
+    body: [
+      "The vetted starting point of the whole process: a broad, user-authored statement of the territory you're taking on, screened against your values, objectives, role, and business fit before any research begins. It enters the first diamond as the input to Discover.",
+      "It is deliberately wider than a problem: the first diamond exists to turn this Challenge into a precise Problem Definition.",
+    ],
+    refs: [["Design Council — The Double Diamond", "https://www.designcouncil.org.uk/resources/the-double-diamond/"]],
+  },
+  "pd-marker": {
+    title: "PD — Problem Definition",
+    body: [
+      "The exit artifact of the first diamond (the brief): problem statement, users and stakeholders, their needs, the solution point-of-view, a How-Might-We question, objectives and constraints, and success criteria. It closes the problem space and frames everything in the second diamond.",
+      "If later work reveals the PD was wrong, the process loops back — that's problem reframing, a feature of the model, not a failure.",
+    ],
+    refs: [["IxDF — Define stage", "https://www.interaction-design.org/literature/article/stage-2-in-the-design-thinking-process-define-the-problem-and-interpret-the-results"]],
+  },
+  "sc-marker": {
+    title: "SC — Solution Concept",
+    body: [
+      "The exit artifact of the second diamond's Make stage: a chosen concept made concrete along four dimensions — structure and morphology, functions/features/behaviors, user interactions, and form/attributes/design language — embodied in testable prototypes.",
+      "The SC is what Evaluate tests against the brief's success criteria, and what the Develop gate weighs for desirability, feasibility, and viability.",
+    ],
+    refs: [["Design Council — Framework for Innovation", "https://www.designcouncil.org.uk/resources/framework-for-innovation/"]],
+  },
   "problem-statement": {
     title: "Problem statement",
     body: [
@@ -149,6 +175,17 @@ const GLOSSARY = {
       "Example: 'We believe overwhelmed caregivers need medication management woven into routines they already have, because new standalone routines fail within weeks.'",
     ],
     refs: [["IxDF — Point of view in design thinking", "https://www.interaction-design.org/literature/article/stage-2-in-the-design-thinking-process-define-the-problem-and-interpret-the-results"]],
+  },
+  hmw: {
+    title: "How Might We…? (HMW)",
+    body: [
+      "A short, generative question that turns your problem definition into a launchpad for ideation: 'How might we [help user] [achieve outcome] [in context]?' — e.g., 'How might we help caregivers keep track of regimen changes without adding new routines?' It's the bridge across the vertex of the two diamonds: narrow enough to anchor ideas to a real need, open enough to allow many answers.",
+      "Test its calibration: if every idea it invites is the same idea, it's too narrow (a solution in disguise); if it invites ideas for a different problem, it's too broad. The d.school phrasing pattern — [user] needs [need] because [insight] — feeds directly into it.",
+    ],
+    refs: [
+      ["IxDF — How Might We questions", "https://www.interaction-design.org/literature/topics/how-might-we"],
+      ["IDEO Design Kit — How Might We", "https://www.ideo.com/journal/design-kit-the-human-centered-design-toolkit"],
+    ],
   },
   "success-criteria": {
     title: "Success criteria",

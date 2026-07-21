@@ -87,8 +87,30 @@ function buildDataReport() {
 
   md.push(`\n## Challenge`);
   md.push(state.challenge.trim() ? `> ${state.challenge.trim()}` : "_No challenge statement recorded._");
+  if (state.selection.decision === "subset" && state.selection.scoped.trim()) {
+    md.push(`\n**Scoped down to (the operative challenge):**\n\n> ${state.selection.scoped.trim()}`);
+  } else if (state.selection.decision === "reject") {
+    md.push(`\n**Decision:** the challenge was assessed and rejected.`);
+  } else if (state.selection.decision === "accept") {
+    md.push(`\n**Decision:** accepted as stated.`);
+  }
   if (state.foundations.themes.trim()) md.push(`\n**Theme / product category:** ${state.foundations.themes.trim()}`);
   if (state.foundations.challenge.trim()) md.push(`\n**Challenge selection notes:** ${state.foundations.challenge.trim()}`);
+
+  const sel = state.selection;
+  const selKeys = ["background", "values", "objectives", "role", "strengths", "weaknesses", "opportunities", "threats", "reflections"];
+  const selFilled = selKeys.filter((k) => sel[k].trim());
+  if (selFilled.length) {
+    md.push(`\n### Challenge selection worksheet`);
+    const labels = {
+      background: "Team / personal background",
+      values: "Fit with values", objectives: "Fit with objectives", role: "Fit with role & capabilities",
+      strengths: "SWOT — Strengths", weaknesses: "SWOT — Weaknesses",
+      opportunities: "SWOT — Opportunities", threats: "SWOT — Threats",
+      reflections: "Team reflections (post-facilitation)",
+    };
+    selFilled.forEach((k) => md.push(`\n**${labels[k]}:** ${sel[k].trim()}`));
+  }
 
   md.push(`\n## Process overview`);
   md.push(mermaidFlow());
@@ -119,6 +141,18 @@ function buildDataReport() {
       md.push(`\n### Tool worksheet: ${t.title}`);
       t.cards.forEach((c) => md.push(`- ${c.text.replace(/\n+/g, " ")}`));
     });
+    if (p === "evaluate" && state.evalPlan.length > 0) {
+      md.push(`\n### Evaluation plan`);
+      md.push("");
+      md.push("| Success criterion | Method | Metric / threshold | Result |");
+      md.push("| --- | --- | --- | --- |");
+      const cell = (s) => (s || "").replace(/\n+/g, " ").replace(/\|/g, "\\|") || "—";
+      state.evalPlan.forEach((r) => {
+        md.push(`| ${cell(r.criterion)} | ${cell(r.method)} | ${cell(r.metric)} | ${r.result.trim() ? cell(r.result) : "— *(not yet measured)*"} |`);
+      });
+      const pending = state.evalPlan.filter((r) => !r.result.trim()).length;
+      if (pending) md.push(`\n_${pending} of ${state.evalPlan.length} plan row(s) have no measured result yet — open gaps._`);
+    }
   });
 
   const totalCards = PHASES.reduce((n, p) => n + state.cards[p].length, 0);
