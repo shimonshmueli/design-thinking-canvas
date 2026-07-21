@@ -8,40 +8,40 @@
 </head>
 <body class="doc-body">
 <header class="app-header doc-header">
-  <nav class="breadcrumb"><a href="../index.html">Canvas</a> <span>›</span> <a href="../stages/evaluate.html">Evaluate</a> <span>›</span> <strong>Stress &amp; Quality Tests</strong></nav>
-  <nav class="process-nav" aria-label="Process stages"><a class="pn-home" href="../index.html">◉ Canvas</a><a class="pn-step pn-discover" href="../stages/discover.html"><span class="pn-num">1</span>Discover</a><a class="pn-step pn-define" href="../stages/define.html"><span class="pn-num">2</span>Define</a><a class="pn-step pn-ideate" href="../stages/ideate.html"><span class="pn-num">3</span>Ideate</a><a class="pn-step pn-make" href="../stages/make.html"><span class="pn-num">4</span>Make</a><a class="pn-step pn-evaluate pn-active" href="../stages/evaluate.html"><span class="pn-num">5</span>Evaluate</a><a class="pn-step pn-develop" href="../stages/develop.html"><span class="pn-num">6</span>Develop</a><a class="pn-step pn-reflect" href="../stages/reflect.html"><span class="pn-num">7</span>Reflect</a><a class="pn-step pn-report" href="../report.html">▤ Report</a></nav>
+  <nav class="breadcrumb"><a href="../index.html" data-i18n="crumb.canvas">Canvas</a> <span>›</span> <a href="../stages/evaluate.html"><span class="lang-en">Evaluate</span><span class="lang-zh">评估</span></a> <span>›</span> <strong><span class="lang-en">Stress &amp; Quality Tests</span><span class="lang-zh">压力与质量测试</span></strong></nav>
+  <nav class="process-nav" aria-label="Process stages"><a class="pn-home" href="../index.html" data-i18n="nav.canvas">◉ Canvas</a><a class="pn-step pn-discover" href="../stages/discover.html"><span class="pn-num">1</span><span data-i18n="nav.stage.discover">Discover</span></a><a class="pn-step pn-define" href="../stages/define.html"><span class="pn-num">2</span><span data-i18n="nav.stage.define">Define</span></a><a class="pn-step pn-ideate" href="../stages/ideate.html"><span class="pn-num">3</span><span data-i18n="nav.stage.ideate">Ideate</span></a><a class="pn-step pn-make" href="../stages/make.html"><span class="pn-num">4</span><span data-i18n="nav.stage.make">Make</span></a><a class="pn-step pn-evaluate pn-active" href="../stages/evaluate.html"><span class="pn-num">5</span><span data-i18n="nav.stage.evaluate">Evaluate</span></a><a class="pn-step pn-develop" href="../stages/develop.html"><span class="pn-num">6</span><span data-i18n="nav.stage.develop">Develop</span></a><a class="pn-step pn-reflect" href="../stages/reflect.html"><span class="pn-num">7</span><span data-i18n="nav.stage.reflect">Reflect</span></a><a class="pn-step pn-report" href="../report.html" data-i18n="nav.report">▤ Report</a></nav>
+  <span class="lang-switch-mount"></span>
 </header>
 <main class="doc">
 
 <article class="doc-article" data-phase="evaluate" data-tool="stress-tests">
-  <span class="phase-tag">Evaluate · tool / method</span>
-  <h1>Stress &amp; Quality Tests</h1>
-  <h2>What it is</h2>
-  <p>Pushing the concept to its limits: peak load, extreme environments, edge-case data, sustained use, misuse. For physical products this means durability and environmental testing; for software, load and performance testing; for services, surge demand. The question is not 'does it work?' but 'when does it stop working, and how gracefully?'</p>
-  <h2>How to use it</h2>
-  <ol><li>Define the expected operating envelope from the brief, then test beyond it.</li><li>Find the actual breaking point, not just 'passed at spec'.</li><li>Observe the failure mode: graceful degradation vs. catastrophic, silent failure.</li><li>Feed limits back into the concept documentation and the Develop gate's feasibility assessment.</li></ol>
-  <h2>Watch out for</h2>
-  <p>Testing only at nominal conditions. Real use lives at the tails — the tired user, the slow network, the hot warehouse, the year-end load spike.</p>
+  <span class="phase-tag"><span class="lang-en">Evaluate · tool / method</span><span class="lang-zh">评估 · 工具/方法</span></span>
+  <h1><span class="lang-en">Stress &amp; Quality Tests</span><span class="lang-zh">压力与质量测试</span></h1>
+  <h2 data-i18n="tool.whatHeading">What it is</h2>
+  <p><span class="lang-en">Pushing the concept to its limits: peak load, extreme environments, edge-case data, sustained use, misuse. For physical products this means durability and environmental testing; for software, load and performance testing; for services, surge demand. The question is not 'does it work?' but 'when does it stop working, and how gracefully?'</span><span class="lang-zh">把概念推向极限：峰值负载、极端环境、边缘情况数据、持续使用、误用情况。对实体产品而言，这意味着耐久性与环境测试；对软件而言，这意味着负载与性能测试；对服务而言，这意味着需求激增的情况。这里要问的问题不是『它能不能用？』，而是『它在什么时候会失效，失效得是否体面？』</span></p>
+  <h2 data-i18n="tool.howHeading">How to use it</h2>
+  <ol><li><span class="lang-en">Define the expected operating envelope from the brief, then test beyond it.</span><span class="lang-zh">根据简报定义出预期的运行范围，然后测试超出这个范围之外的情况。</span></li><li><span class="lang-en">Find the actual breaking point, not just 'passed at spec'.</span><span class="lang-zh">找出真正的临界失效点，而不只是『符合规格即通过』。</span></li><li><span class="lang-en">Observe the failure mode: graceful degradation vs. catastrophic, silent failure.</span><span class="lang-zh">观察失效的方式：是体面地降级，还是灾难性的、无声无息的失效？</span></li><li><span class="lang-en">Feed limits back into the concept documentation and the Develop gate's feasibility assessment.</span><span class="lang-zh">把发现的极限反馈到概念文档中，以及开发关卡的可行性评估中。</span></li></ol>
+  <h2 data-i18n="tool.watchHeading">Watch out for</h2>
+  <p><span class="lang-en">Testing only at nominal conditions. Real use lives at the tails — the tired user, the slow network, the hot warehouse, the year-end load spike.</span><span class="lang-zh">不要只在标称条件下测试。真实使用往往发生在极端情况：疲惫的用户、缓慢的网络、闷热的仓库、年终的流量高峰。</span></p>
   <section class="workspace" id="workspace">
-    <h2>Worksheet</h2>
-    <p class="workspace-hint">Apply Stress &amp; Quality Tests to your project and capture what you find.
-    Entries are saved in your browser, appear under "From tool worksheets" on the Evaluate page,
-    feed the AI context there, and can be sent up as Evaluate stage cards.</p>
+    <h2 data-i18n="toolpage.worksheet.heading">Worksheet</h2>
+    <p class="workspace-hint"><span class="lang-en">Apply Stress &amp; Quality Tests to your project and capture what you find. Entries are saved in your browser, appear under "From tool worksheets" on the Evaluate page, feed the AI context there, and can be sent up as Evaluate stage cards.</span><span class="lang-zh">运用「压力与质量测试」处理你的项目，并记录你的发现。条目会保存在你的浏览器中，显示在「评估」页面『来自工具工作表』区块下，并纳入该页面的 AI 上下文，还可以被发送为「评估」阶段的卡片。</span></p>
     <form id="card-form" class="card-form">
-      <textarea placeholder="Add a finding, data point, or question to pursue…" required></textarea>
-      <button type="submit" class="btn btn-add">+ Add entry</button>
+      <textarea data-i18n-placeholder="toolpage.entryPlaceholder" placeholder="Add a finding, data point, or question to pursue…" required></textarea>
+      <button type="submit" class="btn btn-add" data-i18n="toolpage.addEntry">+ Add entry</button>
     </form>
     <div id="card-list" class="card-list"></div>
   </section>
-  <nav class="doc-nav"><a href="error-recovery.html">← Interactions &amp; Error Recovery</a><a href="../stages/evaluate.html">Back to Evaluate →</a></nav>
+  <nav class="doc-nav"><a href="error-recovery.html">← <span class="lang-en">Interactions &amp; Error Recovery</span><span class="lang-zh">交互与错误恢复</span></a><a href="../stages/evaluate.html"><span class="lang-en">Back to Evaluate</span><span class="lang-zh">返回评估</span> →</a></nav>
 </article>
 </main>
+<script src="../lang.js"></script>
 <script src="../store.js"></script>
 <script src="../llm.js"></script>
 <script src="../glossary.js"></script>
 <script src="../tool.js"></script>
 <footer class="app-footer">
-  <a href="../index.html">Design Thinking Canvas</a> — Double Diamond tutorial
+  <a href="../index.html" data-i18n="footer.tagline.link">Design Thinking Canvas</a> — <span data-i18n="footer.tagline">Double Diamond tutorial</span>
 </footer>
 </body>
 </html>

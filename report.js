@@ -3,17 +3,16 @@
 // narrative (under the covers) around the user's data; otherwise a clean
 // data-only report is produced. Requires store.js and llm.js.
 
-const STAGE_TITLES = {
-  discover: "Discover",
-  define: "Define",
-  ideate: "Ideate",
-  make: "Make",
-  evaluate: "Evaluate",
-  develop: "Develop",
-  reflect: "Reflect & Improve",
-};
+function STAGE_TITLES_MAP() {
+  return {
+    discover: t("phase.discover.title"), define: t("phase.define.title"), ideate: t("phase.ideate.title"),
+    make: t("phase.make.title"), evaluate: t("phase.evaluate.title"), develop: t("phase.develop.title"),
+    reflect: t("phase.reflect.title"),
+  };
+}
+const STAGE_TITLES = STAGE_TITLES_MAP();
 
-const STAGE_ROLES = {
+const STAGE_ROLES_EN = {
   discover: "divergent · problem space — research & empathy",
   define: "convergent · problem space — sensemaking & problem definition",
   ideate: "divergent · solution space — creating potential solutions",
@@ -22,6 +21,16 @@ const STAGE_ROLES = {
   develop: "gate check — viability, feasibility, desirability",
   reflect: "meta — improve the process and the next release",
 };
+const STAGE_ROLES_ZH = {
+  discover: "发散 · 问题空间 — 调研与共情",
+  define: "收敛 · 问题空间 — 理解意义与问题定义",
+  ideate: "发散 · 解决方案空间 — 创造潜在解决方案",
+  make: "收敛 · 解决方案空间 — 落实与呈现",
+  evaluate: "与用户、客户、专家一起测试",
+  develop: "关卡检查 — 商业可行性、技术可行性、合意性",
+  reflect: "元阶段 — 改进流程与下一版发布",
+};
+const STAGE_ROLES = (typeof getLang === "function" && getLang() === "zh") ? STAGE_ROLES_ZH : STAGE_ROLES_EN;
 
 let state = loadState();
 
@@ -33,7 +42,7 @@ const noteEl = document.getElementById("report-note");
 document.getElementById("report-ai").addEventListener("click", generateWithAI);
 document.getElementById("report-data").addEventListener("click", () => {
   state = loadState();
-  showReport(buildDataReport(), "Data-only report generated.");
+  showReport(buildDataReport(), t("report.dataGenerated"));
 });
 document.getElementById("report-download").addEventListener("click", download);
 document.getElementById("report-copy").addEventListener("click", copyReport);
@@ -42,15 +51,15 @@ document.getElementById("report-copy").addEventListener("click", copyReport);
 
 function counts(phase) {
   const cards = state.cards[phase].length;
-  const tools = toolsForPhase(state, phase).reduce((n, t) => n + t.cards.length, 0);
+  const tools = toolsForPhase(state, phase).reduce((n, tl) => n + tl.cards.length, 0);
   return { cards, tools };
 }
 
 function mermaidFlow() {
   const label = (p) => {
     const { cards, tools } = counts(p);
-    const bits = [`${STAGE_TITLES[p]}`, `${cards} card${cards === 1 ? "" : "s"}`];
-    if (tools) bits.push(`${tools} tool entr${tools === 1 ? "y" : "ies"}`);
+    const bits = [`${STAGE_TITLES[p]}`, `${cards} ${cards === 1 ? t("board.card") : t("board.cards")}`];
+    if (tools) bits.push(`${tools} ${tools === 1 ? t("toolws.entry") : t("toolws.entries")}`);
     return bits.join("<br/>");
   };
   return [
@@ -72,7 +81,7 @@ function mermaidFlow() {
 function mermaidPie() {
   const rows = PHASES.map((p) => [STAGE_TITLES[p], counts(p).cards + counts(p).tools]).filter(([, n]) => n > 0);
   if (rows.length < 2) return "";
-  return ["```mermaid", "pie showData title Captured items per stage", ...rows.map(([t, n]) => `  "${t}" : ${n}`), "```"].join("\n");
+  return ["```mermaid", `pie showData title ${t("report.md.pieTitle")}`, ...rows.map(([label, n]) => `  "${label}" : ${n}`), "```"].join("\n");
 }
 
 /* ---------------- data report ---------------- */
@@ -83,44 +92,44 @@ function buildDataReport() {
   const author = llmUserName();
 
   md.push(`# ${state.title} — Design Thinking Project Report`);
-  md.push(`*Generated ${today}${author ? ` · ${author}` : ""} · Double Diamond process*`);
+  md.push(`*${t("report.md.generated")} ${today}${author ? ` · ${author}` : ""} · ${t("report.md.process")}*`);
 
-  md.push(`\n## Challenge`);
-  md.push(state.challenge.trim() ? `> ${state.challenge.trim()}` : "_No challenge statement recorded._");
+  md.push(`\n## ${t("report.md.challengeHeading")}`);
+  md.push(state.challenge.trim() ? `> ${state.challenge.trim()}` : `_${t("report.md.noChallenge")}_`);
   if (state.selection.decision === "subset" && state.selection.scoped.trim()) {
-    md.push(`\n**Scoped down to (the operative challenge):**\n\n> ${state.selection.scoped.trim()}`);
+    md.push(`\n**${t("report.md.scopedTo")}**\n\n> ${state.selection.scoped.trim()}`);
   } else if (state.selection.decision === "reject") {
-    md.push(`\n**Decision:** the challenge was assessed and rejected.`);
+    md.push(`\n**${t("report.md.decisionRejected")}**`);
   } else if (state.selection.decision === "accept") {
-    md.push(`\n**Decision:** accepted as stated.`);
+    md.push(`\n**${t("report.md.decisionAccepted")}**`);
   }
-  if (state.foundations.themes.trim()) md.push(`\n**Theme / product category:** ${state.foundations.themes.trim()}`);
-  if (state.foundations.challenge.trim()) md.push(`\n**Challenge selection notes:** ${state.foundations.challenge.trim()}`);
+  if (state.foundations.themes.trim()) md.push(`\n**${t("report.md.theme")}** ${state.foundations.themes.trim()}`);
+  if (state.foundations.challenge.trim()) md.push(`\n**${t("report.md.selectionNotes")}** ${state.foundations.challenge.trim()}`);
 
   const sel = state.selection;
   const selKeys = ["background", "values", "objectives", "role", "strengths", "weaknesses", "opportunities", "threats", "reflections"];
   const selFilled = selKeys.filter((k) => sel[k].trim());
   if (selFilled.length) {
-    md.push(`\n### Challenge selection worksheet`);
+    md.push(`\n### ${t("report.md.selectionHeading")}`);
     const labels = {
-      background: "Team / personal background",
-      values: "Fit with values", objectives: "Fit with objectives", role: "Fit with role & capabilities",
-      strengths: "SWOT — Strengths", weaknesses: "SWOT — Weaknesses",
-      opportunities: "SWOT — Opportunities", threats: "SWOT — Threats",
-      reflections: "Team reflections (post-facilitation)",
+      background: t("selection.background.label"),
+      values: t("selection.values.label"), objectives: t("selection.objectives.label"), role: t("selection.role.label"),
+      strengths: t("selection.strengths.label"), weaknesses: t("selection.weaknesses.label"),
+      opportunities: t("selection.opportunities.label"), threats: t("selection.threats.label"),
+      reflections: t("selection.reflections.label"),
     };
     selFilled.forEach((k) => md.push(`\n**${labels[k]}:** ${sel[k].trim()}`));
   }
 
-  md.push(`\n## Process overview`);
+  md.push(`\n## ${t("report.md.processOverview")}`);
   md.push(mermaidFlow());
   const pie = mermaidPie();
   if (pie) md.push("\n" + pie);
 
-  md.push(`\n## Problem Definition (Brief)`);
+  md.push(`\n## ${t("report.md.briefHeading")}`);
   const filled = BRIEF_FIELDS.filter(([k]) => state.brief[k].trim());
   if (filled.length === 0) {
-    md.push("_No brief recorded — the first diamond has not been closed._");
+    md.push(`_${t("report.md.noBrief")}_`);
   } else {
     filled.forEach(([k, label]) => {
       md.push(`\n**${label}**\n\n${state.brief[k].trim()}`);
@@ -132,33 +141,33 @@ function buildDataReport() {
     md.push(`*${STAGE_ROLES[p]}*`);
     const cards = state.cards[p];
     if (cards.length === 0) {
-      md.push("\n_No cards recorded for this stage._");
+      md.push(`\n_${t("report.md.noCards")}_`);
     } else {
       md.push("");
       cards.forEach((c) => md.push(`- ${c.text.replace(/\n+/g, " ")}`));
     }
-    toolsForPhase(state, p).forEach((t) => {
-      md.push(`\n### Tool worksheet: ${t.title}`);
-      t.cards.forEach((c) => md.push(`- ${c.text.replace(/\n+/g, " ")}`));
+    toolsForPhase(state, p).forEach((tl) => {
+      md.push(`\n### ${t("report.md.toolWorksheet")} ${tl.title}`);
+      tl.cards.forEach((c) => md.push(`- ${c.text.replace(/\n+/g, " ")}`));
     });
     if (p === "evaluate" && state.evalPlan.length > 0) {
-      md.push(`\n### Evaluation plan`);
+      md.push(`\n### ${t("report.md.evalPlan")}`);
       md.push("");
-      md.push("| Success criterion | Method | Metric / threshold | Result |");
+      md.push(`| ${t("evalplan.colCriterion")} | ${t("evalplan.colMethod")} | ${t("evalplan.colMetric")} | ${t("evalplan.colResult")} |`);
       md.push("| --- | --- | --- | --- |");
       const cell = (s) => (s || "").replace(/\n+/g, " ").replace(/\|/g, "\\|") || "—";
       state.evalPlan.forEach((r) => {
-        md.push(`| ${cell(r.criterion)} | ${cell(r.method)} | ${cell(r.metric)} | ${r.result.trim() ? cell(r.result) : "— *(not yet measured)*"} |`);
+        md.push(`| ${cell(r.criterion)} | ${cell(r.method)} | ${cell(r.metric)} | ${r.result.trim() ? cell(r.result) : `— *(${t("report.md.notMeasured")})*`} |`);
       });
       const pending = state.evalPlan.filter((r) => !r.result.trim()).length;
-      if (pending) md.push(`\n_${pending} of ${state.evalPlan.length} plan row(s) have no measured result yet — open gaps._`);
+      if (pending) md.push(`\n_${pending} ${t("report.md.pendingRows")} ${state.evalPlan.length} ${t("report.md.pendingRowsSuffix")}_`);
     }
   });
 
   const totalCards = PHASES.reduce((n, p) => n + state.cards[p].length, 0);
   const totalTools = PHASES.reduce((n, p) => n + counts(p).tools, 0);
   md.push(`\n---\n`);
-  md.push(`*${totalCards} stage cards and ${totalTools} tool worksheet entries captured across the process.*`);
+  md.push(`*${t("report.md.summary").replace("{cards}", totalCards).replace("{tools}", totalTools)}*`);
 
   return md.join("\n");
 }
@@ -169,23 +178,21 @@ async function generateWithAI() {
   state = loadState();
   if (!llmConfigured()) {
     statusEl.classList.add("assist-error");
-    statusEl.innerHTML =
-      'No API key configured — add one in <a href="index.html#settings">Settings on the Canvas page</a>, ' +
-      "or use the data-only report.";
+    statusEl.innerHTML = `${t("report.noKey")}<a href="index.html#settings">${t("report.noKeyLink")}</a>${t("report.noKeySuffix")}`;
     return;
   }
 
   const btn = document.getElementById("report-ai");
   btn.disabled = true;
   statusEl.classList.remove("assist-error");
-  statusEl.textContent = "Compiling your data and writing the report — this can take up to a minute…";
+  statusEl.textContent = t("report.compiling");
 
   try {
     const dataMd = buildDataReport();
     const system =
       "You are a precise technical writer and design thinking coach producing a final project report. " +
       "You synthesize the author's own material into clear narrative. You never invent facts, findings, users, " +
-      "or results that are not in the data; where a section is empty or thin you say so plainly and note it as a gap.";
+      "or results that are not in the data; where a section is empty or thin you say so plainly and note it as a gap." + aiLangInstruction();
     const user =
       "Below is the complete raw data of a Double Diamond design thinking project, as draft markdown:\n\n" +
       "<data>\n" + dataMd + "\n</data>\n\n" +
@@ -206,13 +213,10 @@ async function generateWithAI() {
     const text = await llmComplete(system, user);
     const cleaned = text.replace(/^```(?:markdown)?\s*\n?/i, "").replace(/\n?```\s*$/i, "").trim();
     if (!cleaned.startsWith("#")) throw new Error("The LLM response didn't look like a Markdown document — try again or use the data-only report.");
-    showReport(cleaned, "AI-narrative report generated — review it before sharing.");
+    showReport(cleaned, t("report.aiGenerated"));
   } catch (err) {
     statusEl.classList.add("assist-error");
-    statusEl.textContent =
-      (err instanceof TypeError
-        ? "The request never reached the provider — if this page was opened as a local file, serve the folder (python3 -m http.server). "
-        : err.message + " ") + "You can still use the data-only report.";
+    statusEl.textContent = (err instanceof TypeError ? t("assist.networkErr") + " " : err.message + " ") + t("report.stillDataOnly");
   } finally {
     btn.disabled = false;
   }
@@ -245,10 +249,10 @@ function download() {
 async function copyReport() {
   try {
     await navigator.clipboard.writeText(textEl.value);
-    noteEl.textContent = "Copied ✓";
+    noteEl.textContent = t("report.copiedNote");
   } catch {
     textEl.select();
     document.execCommand("copy");
-    noteEl.textContent = "Copied ✓";
+    noteEl.textContent = t("report.copiedNote");
   }
 }

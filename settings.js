@@ -11,23 +11,23 @@
     overlay.className = "settings-overlay";
     overlay.hidden = true;
     overlay.innerHTML = `
-      <div class="settings-panel" role="dialog" aria-modal="true" aria-label="Settings">
+      <div class="settings-panel" role="dialog" aria-modal="true" aria-label="${t("settings.title")}">
         <div class="settings-head">
-          <h2>Settings</h2>
-          <button type="button" class="btn btn-ghost" id="settings-close" aria-label="Close">✕</button>
+          <h2>${t("settings.title")}</h2>
+          <button type="button" class="btn btn-ghost" id="settings-close" aria-label="${t("settings.close")}">✕</button>
         </div>
 
-        <label class="settings-field">Your name
+        <label class="settings-field">${t("settings.name.label")}
           <input id="set-name" type="text" placeholder="e.g. Dana" autocomplete="name">
         </label>
 
-        <label class="settings-field">About yourself <span class="settings-opt">(free form — used to personalize copied LLM prompts)</span>
-          <textarea id="set-about" rows="3" placeholder="e.g. Industrial design undergrad, comfortable with sketching, new to business strategy; learning design thinking for a product course."></textarea>
+        <label class="settings-field">${t("settings.about.label")} <span class="settings-opt">${t("settings.about.hint")}</span>
+          <textarea id="set-about" rows="3" placeholder="${t("settings.about.placeholder")}"></textarea>
         </label>
 
-        <h3 class="settings-subhead">AI assistant — bring your own key</h3>
+        <h3 class="settings-subhead">${t("settings.ai.heading")}</h3>
 
-        <label class="settings-field">Provider
+        <label class="settings-field">${t("settings.provider.label")}
           <select id="set-provider">
             ${Object.entries(LLM_PROVIDERS)
               .map(([id, p]) => `<option value="${id}">${p.label}</option>`)
@@ -35,21 +35,19 @@
           </select>
         </label>
 
-        <label class="settings-field">Model <span class="settings-opt">(optional — leave blank for the default; type to search)</span>
+        <label class="settings-field">${t("settings.model.label")} <span class="settings-opt">${t("settings.model.hint")}</span>
           <input id="set-model" type="text" list="set-model-list" autocomplete="off">
           <datalist id="set-model-list"></datalist>
         </label>
 
-        <label class="settings-field">API key
+        <label class="settings-field">${t("settings.key.label")}
           <input id="set-key" type="password" autocomplete="off">
         </label>
 
-        <p class="llm-note">Your name and key are stored only in this browser (localStorage). The key is sent
-        only to the provider you select, directly from your browser. Don't enter your key on a shared or
-        public computer.</p>
+        <p class="llm-note">${t("settings.note")}</p>
 
         <div class="settings-actions">
-          <button type="button" class="btn btn-add" id="settings-save">Save</button>
+          <button type="button" class="btn btn-add" id="settings-save">${t("settings.save")}</button>
           <span class="assist-status" id="settings-status"></span>
         </div>
       </div>
@@ -83,7 +81,7 @@
       cfg.model = modelInput.value.trim();
       cfg.key = keyInput.value.trim();
       saveLLMConfig(cfg);
-      overlay.querySelector("#settings-status").textContent = "Saved.";
+      overlay.querySelector("#settings-status").textContent = t("settings.saved");
       updateButtons();
       setTimeout(closeSettings, 500);
     });
@@ -139,7 +137,7 @@
 
   function updateButtons() {
     const cfg = loadLLMConfig();
-    const label = cfg.name ? `⚙ ${cfg.name}` : "⚙ Settings";
+    const label = cfg.name ? `⚙ ${cfg.name}` : t("header.settings");
     settingsButtons().forEach((b) => (b.textContent = label));
   }
 

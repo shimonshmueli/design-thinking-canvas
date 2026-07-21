@@ -102,6 +102,36 @@ body {
 }
 
 .btn:hover { background: var(--bg); }
+
+/* Language switch */
+
+.lang-switch {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.lang-switch button {
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 7px 10px;
+  border: none;
+  background: var(--panel);
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+
+.lang-switch button + button { border-left: 1px solid var(--border); }
+.lang-switch button:hover { background: var(--bg); }
+.lang-switch button.lang-active { background: var(--discover); color: white; }
+
+/* Bilingual content baked into generated pages: show only the active language. */
+html[data-lang="en"] .lang-zh { display: none; }
+html[data-lang="zh"] .lang-en { display: none; }
+html[data-lang="zh"] :lang(zh) { line-height: 1.9; }
 .btn-ghost { color: var(--ink-soft); }
 .btn-danger { color: #b3261e; border-color: #f3c9c6; }
 .btn-danger:hover { background: #fdf1f0; }

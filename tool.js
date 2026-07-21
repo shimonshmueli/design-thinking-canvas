@@ -75,7 +75,7 @@ function deleteEntry(id) {
 function promoteEntry(card, btn) {
   state.cards[phase].push(newCard(`[${toolTitle}] ${card.text}`));
   persist();
-  btn.textContent = "Sent ✓";
+  btn.textContent = t("workspace.sent");
   btn.disabled = true;
 }
 
@@ -84,7 +84,7 @@ function renderList() {
   if (entries().length === 0) {
     const hint = document.createElement("p");
     hint.className = "empty-hint";
-    hint.textContent = "No entries yet — capture your first finding above.";
+    hint.textContent = t("toolpage.noEntries");
     list.appendChild(hint);
     return;
   }
@@ -124,14 +124,14 @@ function renderEntry(card) {
   const promote = document.createElement("button");
   promote.className = "card-promote";
   promote.type = "button";
-  promote.textContent = "→ Send to stage";
+  promote.textContent = t("workspace.sendToStage");
   promote.title = `Add this entry as a card in the ${phase} stage`;
   promote.addEventListener("click", () => promoteEntry(card, promote));
 
   const del = document.createElement("button");
   del.className = "card-delete";
   del.type = "button";
-  del.textContent = "Delete";
+  del.textContent = t("workspace.delete");
   del.addEventListener("click", () => deleteEntry(card.id));
 
   actions.appendChild(promote);
@@ -150,11 +150,11 @@ function initAssist() {
   panel.className = "assist";
   panel.innerHTML = `
     <div class="assist-head">
-      <h3>✦ AI assist</h3>
-      <select class="assist-model" id="assist-model" title="Model used for suggestions"></select>
+      <h3>${t("assist.heading")}</h3>
+      <select class="assist-model" id="assist-model" title="${t("assist.modelLabel")}"></select>
     </div>
     <div class="assist-actions">
-      <button type="button" class="btn btn-add" id="assist-suggest">Suggest entries for this tool</button>
+      <button type="button" class="btn btn-add" id="assist-suggest">${t("assist.suggestEntries")}</button>
       <span class="assist-status" id="assist-status"></span>
     </div>
     <div id="assist-suggestions"></div>
@@ -165,13 +165,9 @@ function initAssist() {
   initModelSelect(panel.querySelector("#assist-model"));
 
   if (!llmConfigured()) {
-    statusEl.innerHTML =
-      'No API key yet — set your name, provider, and key in ' +
-      '<a href="../index.html#settings">Settings on the Canvas page</a>.';
+    statusEl.innerHTML = `${t("assist.noKey")}<a href="../index.html#settings">${t("assist.noKeyLink")}</a>.`;
   } else if (!llmUserName() && !(loadLLMConfig().about || "").trim()) {
-    statusEl.innerHTML =
-      'Tip: add your name and a line about yourself in ' +
-      '<a href="../index.html#settings">Settings</a> to personalize AI help.';
+    statusEl.innerHTML = `${t("assist.aboutNudge")}<a href="../index.html#settings">${t("assist.aboutNudgeLink")}</a>${t("assist.aboutNudgeSuffix")}`;
   }
 
   panel
@@ -190,7 +186,7 @@ function initModelSelect(select) {
     if (!options.includes(current)) options.unshift(current);
     select.innerHTML =
       options.map((m) => `<option value="${m}" ${m === current ? "selected" : ""}>${m}</option>`).join("") +
-      `<option value="__custom">Custom model…</option>`;
+      `<option value="__custom">${t("assist.customModel")}</option>`;
   };
 
   populate(provider.models);
@@ -201,7 +197,7 @@ function initModelSelect(select) {
   select.addEventListener("change", () => {
     let model = select.value;
     if (model === "__custom") {
-      const entered = prompt("Model identifier (as your provider expects it):", current);
+      const entered = prompt(t("assist.customModelPrompt"), current);
       if (!entered || !entered.trim()) {
         select.value = current;
         return;
@@ -259,19 +255,17 @@ async function suggest(statusEl, suggestionsEl) {
   if (["ideate", "make", "evaluate", "develop"].includes(phase) && !briefStarted(state)) {
     statusEl.classList.add("assist-error");
     statusEl.innerHTML =
-      "The AI won't help in the solution space until the first diamond is closed — " +
-      'write your <a href="../stages/define.html#brief">Problem Definition on the Define page</a> first. ' +
-      "You can still add entries manually.";
+      `${t("assist.gateBlocked")}<a href="../stages/define.html#brief">${t("assist.gateBlockedStage")}</a>${t("assist.gateBlockedSuffixTool")}`;
     return;
   }
-  statusEl.textContent = "Contacting your LLM…";
+  statusEl.textContent = t("assist.contacting");
   statusEl.classList.remove("assist-error");
   suggestionsEl.innerHTML = "";
   try {
     const system =
       "You are a design thinking coach. The student is applying a specific design method to their project " +
       "and capturing findings in a worksheet. Suggest concrete, project-specific worksheet entries — " +
-      "real starting points they can verify and refine, or sharp questions the method should answer. No generic advice.";
+      "real starting points they can verify and refine, or sharp questions the method should answer. No generic advice." + aiLangInstruction();
     const user =
       `${toolContext()}\n\n` +
       `The tool being applied (${phase} stage): ${toolTitle}. ${toolDescription()}\n\n` +
@@ -285,15 +279,11 @@ async function suggest(statusEl, suggestionsEl) {
     const items = llmExtractJSON(text);
     if (!Array.isArray(items) || items.length === 0) throw new Error("Unexpected response format.");
 
-    statusEl.textContent = "Review the suggestions — add what's useful, then verify it. The LLM may be wrong or outdated.";
+    statusEl.textContent = t("assist.reviewEntries");
     renderSuggestions(suggestionsEl, items.map(String), statusEl);
   } catch (err) {
     statusEl.classList.add("assist-error");
-    statusEl.textContent =
-      err instanceof TypeError
-        ? "The request never reached the provider. If you opened this page as a local file, serve the folder instead " +
-          "(python3 -m http.server) — some browsers block API calls from file:// pages."
-        : err.message;
+    statusEl.textContent = err instanceof TypeError ? t("assist.networkErr") : err.message;
   }
 }
 
@@ -314,7 +304,7 @@ function renderSuggestions(container, items, statusEl) {
     const add = document.createElement("button");
     add.type = "button";
     add.className = "btn btn-add";
-    add.textContent = "Add";
+    add.textContent = t("assist.add");
     add.addEventListener("click", () => {
       addEntry(text);
       row.remove();
@@ -323,7 +313,7 @@ function renderSuggestions(container, items, statusEl) {
     const dismiss = document.createElement("button");
     dismiss.type = "button";
     dismiss.className = "btn btn-ghost";
-    dismiss.textContent = "Dismiss";
+    dismiss.textContent = t("assist.dismiss");
     dismiss.addEventListener("click", () => row.remove());
 
     actions.appendChild(add);
@@ -336,11 +326,11 @@ function renderSuggestions(container, items, statusEl) {
   const addAll = document.createElement("button");
   addAll.type = "button";
   addAll.className = "btn btn-ghost suggestion-add-all";
-  addAll.textContent = "Add all";
+  addAll.textContent = t("assist.addAll");
   addAll.addEventListener("click", () => {
     container.querySelectorAll(".suggestion").forEach((s) => addEntry(s.dataset.text));
     container.innerHTML = "";
-    statusEl.textContent = "Added.";
+    statusEl.textContent = t("assist.added");
   });
   container.appendChild(addAll);
 }

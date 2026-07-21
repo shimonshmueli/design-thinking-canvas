@@ -87,7 +87,7 @@ function renderList() {
   if (cards.length === 0) {
     const hint = document.createElement("p");
     hint.className = "empty-hint";
-    hint.textContent = "No cards yet — add your first above.";
+    hint.textContent = t("workspace.noCards");
     list.appendChild(hint);
     return;
   }
@@ -124,7 +124,7 @@ function renderCard(card) {
   const del = document.createElement("button");
   del.className = "card-delete";
   del.type = "button";
-  del.textContent = "Delete";
+  del.textContent = t("workspace.delete");
   del.addEventListener("click", () => deleteCard(card.id));
 
   meta.appendChild(date);
@@ -141,11 +141,11 @@ function initAssist() {
   panel.className = "assist";
   panel.innerHTML = `
     <div class="assist-head">
-      <h3>✦ AI assist</h3>
-      <select class="assist-model" id="assist-model" title="Model used for suggestions"></select>
+      <h3>${t("assist.heading")}</h3>
+      <select class="assist-model" id="assist-model" title="${t("assist.modelLabel")}"></select>
     </div>
     <div class="assist-actions">
-      <button type="button" class="btn btn-add" id="assist-suggest">Suggest cards for this stage</button>
+      <button type="button" class="btn btn-add" id="assist-suggest">${t("assist.suggestCards")}</button>
       <span class="assist-status" id="assist-status"></span>
     </div>
     <div id="assist-suggestions"></div>
@@ -156,13 +156,9 @@ function initAssist() {
   initModelSelect(panel.querySelector("#assist-model"));
 
   if (!llmConfigured()) {
-    statusEl.innerHTML =
-      'No API key yet — set your name, provider, and key in ' +
-      '<a href="../index.html#settings">Settings on the Canvas page</a>.';
+    statusEl.innerHTML = `${t("assist.noKey")}<a href="../index.html#settings">${t("assist.noKeyLink")}</a>.`;
   } else if (!llmUserName() && !(loadLLMConfig().about || "").trim()) {
-    statusEl.innerHTML =
-      'Tip: add your name and a line about yourself in ' +
-      '<a href="../index.html#settings">Settings</a> to personalize AI help.';
+    statusEl.innerHTML = `${t("assist.aboutNudge")}<a href="../index.html#settings">${t("assist.aboutNudgeLink")}</a>${t("assist.aboutNudgeSuffix")}`;
   }
 
   panel.querySelector("#assist-suggest").addEventListener("click", () => suggestCards(statusEl, panel.querySelector("#assist-suggestions")));
@@ -180,7 +176,7 @@ function initModelSelect(select) {
     if (!options.includes(current)) options.unshift(current);
     select.innerHTML =
       options.map((m) => `<option value="${m}" ${m === current ? "selected" : ""}>${m}</option>`).join("") +
-      `<option value="__custom">Custom model…</option>`;
+      `<option value="__custom">${t("assist.customModel")}</option>`;
   };
 
   populate(provider.models);
@@ -194,7 +190,7 @@ function initModelSelect(select) {
   select.addEventListener("change", () => {
     let model = select.value;
     if (model === "__custom") {
-      const entered = prompt("Model identifier (as your provider expects it):", current);
+      const entered = prompt(t("assist.customModelPrompt"), current);
       if (!entered || !entered.trim()) {
         select.value = current;
         return;
@@ -219,13 +215,13 @@ function initToolWorksheets() {
   const box = document.createElement("div");
   box.className = "tool-worksheets";
   box.innerHTML =
-    `<h3>From tool worksheets</h3>` +
-    `<p class="workspace-hint">Data captured at the tool level feeds this stage (and its AI context).</p>` +
+    `<h3>${t("toolws.heading")}</h3>` +
+    `<p class="workspace-hint">${t("toolws.hint")}</p>` +
     `<ul>` +
     withData
       .map(
-        (t) =>
-          `<li><a href="../tools/${t.slug}.html">${t.title}</a> — ${t.cards.length} entr${t.cards.length === 1 ? "y" : "ies"}</li>`
+        (tl) =>
+          `<li><a href="../tools/${tl.slug}.html">${tl.title}</a> — ${tl.cards.length} ${tl.cards.length === 1 ? t("toolws.entry") : t("toolws.entries")}</li>`
       )
       .join("") +
     `</ul>`;
@@ -239,18 +235,18 @@ function initChallengeDisplay() {
   if (state.challenge.trim()) {
     const scoped = operativeChallenge(state) !== state.challenge.trim();
     section.innerHTML = `
-      <h2>The Challenge${scoped ? " (scoped down)" : ""}</h2>
+      <h2>${t("challenge.display.heading")}${scoped ? t("challenge.display.scoped") : ""}</h2>
       <blockquote></blockquote>
-      ${scoped ? '<p class="workspace-hint">Original: <em class="orig-challenge"></em></p>' : ""}
-      <p class="workspace-hint"><a href="../index.html">Edit it on the Canvas page →</a></p>
+      ${scoped ? `<p class="workspace-hint">${t("challenge.display.original")}<em class="orig-challenge"></em></p>` : ""}
+      <p class="workspace-hint"><a href="../index.html">${t("challenge.display.editLink")}</a></p>
     `;
     section.querySelector("blockquote").textContent = `“${operativeChallenge(state)}”`;
     if (scoped) section.querySelector(".orig-challenge").textContent = state.challenge.trim();
   } else {
     section.innerHTML = `
-      <h2>The Challenge</h2>
-      <p class="workspace-hint">No challenge defined yet. The whole process starts from it —
-      <a href="../index.html">state your challenge on the Canvas page →</a></p>
+      <h2>${t("challenge.display.heading")}</h2>
+      <p class="workspace-hint">${t("challenge.display.none")}
+      <a href="../index.html">${t("challenge.display.setLink")}</a></p>
     `;
   }
   workspace.insertAdjacentElement("beforebegin", section);
@@ -295,19 +291,17 @@ async function suggestCards(statusEl, suggestionsEl) {
   if (["ideate", "make", "evaluate", "develop"].includes(phase) && !briefStarted(state)) {
     statusEl.classList.add("assist-error");
     statusEl.innerHTML =
-      "The AI won't help in the solution space until the first diamond is closed — " +
-      'write your <a href="define.html#brief">Problem Definition on the Define page</a> first. ' +
-      "You can still add cards manually.";
+      `${t("assist.gateBlocked")}<a href="define.html#brief">${t("assist.gateBlockedStage")}</a>${t("assist.gateBlockedSuffix")}`;
     return;
   }
-  statusEl.textContent = "Contacting your LLM…";
+  statusEl.textContent = t("assist.contacting");
   statusEl.classList.remove("assist-error");
   suggestionsEl.innerHTML = "";
   try {
     const system =
       "You are a design thinking coach helping a student work through the Double Diamond process " +
       "(Discover, Define, Ideate, Make, Evaluate, Develop, Reflect). You help them fill their canvas " +
-      "with concise, concrete, stage-appropriate cards. You ask good questions and avoid generic filler.";
+      "with concise, concrete, stage-appropriate cards. You ask good questions and avoid generic filler." + aiLangInstruction();
     const user =
       `${projectContext()}\n\n` +
       `Current stage: ${STAGE_DESCRIPTIONS[phase]}\n\n` +
@@ -320,15 +314,11 @@ async function suggestCards(statusEl, suggestionsEl) {
     const items = llmExtractJSON(text);
     if (!Array.isArray(items) || items.length === 0) throw new Error("Unexpected response format.");
 
-    statusEl.textContent = "Review the suggestions — add the ones you agree with. Verify anything factual.";
+    statusEl.textContent = t("assist.reviewCards");
     renderSuggestions(suggestionsEl, items.map(String), statusEl);
   } catch (err) {
     statusEl.classList.add("assist-error");
-    statusEl.textContent =
-      err instanceof TypeError
-        ? "The request never reached the provider. If you opened this page as a local file, serve the folder instead " +
-          "(python3 -m http.server) — some browsers block API calls from file:// pages."
-        : err.message;
+    statusEl.textContent = err instanceof TypeError ? t("assist.networkErr") : err.message;
   }
 }
 
@@ -338,13 +328,13 @@ function renderSuggestions(container, items, statusEl) {
   const addAll = document.createElement("button");
   addAll.type = "button";
   addAll.className = "btn btn-ghost suggestion-add-all";
-  addAll.textContent = "Add all";
+  addAll.textContent = t("assist.addAll");
   addAll.addEventListener("click", () => {
     container.querySelectorAll(".suggestion").forEach((s) => {
       addCard(s.dataset.text);
     });
     container.innerHTML = "";
-    statusEl.textContent = "Added.";
+    statusEl.textContent = t("assist.added");
   });
 
   items.forEach((text) => {
@@ -361,7 +351,7 @@ function renderSuggestions(container, items, statusEl) {
     const add = document.createElement("button");
     add.type = "button";
     add.className = "btn btn-add";
-    add.textContent = "Add";
+    add.textContent = t("assist.add");
     add.addEventListener("click", () => {
       addCard(text);
       row.remove();
@@ -370,7 +360,7 @@ function renderSuggestions(container, items, statusEl) {
     const dismiss = document.createElement("button");
     dismiss.type = "button";
     dismiss.className = "btn btn-ghost";
-    dismiss.textContent = "Dismiss";
+    dismiss.textContent = t("assist.dismiss");
     dismiss.addEventListener("click", () => row.remove());
 
     actions.appendChild(add);
@@ -390,12 +380,10 @@ function initBriefEditor() {
   section.className = "brief brief-editor";
   section.id = "brief";
   section.innerHTML = `
-    <h2>Problem Definition (Brief)</h2>
-    <p class="workspace-hint">The exit artifact of the first diamond. Everything in the second diamond
-    (Ideate, Make, Evaluate, Develop) is framed by what you write here. Synthesize it from your
-    Discover and Define cards — or let your LLM draft it, then correct it.</p>
+    <h2>${t("brief.heading")}</h2>
+    <p class="workspace-hint">${t("brief.editorHint")}</p>
     <div class="assist-actions">
-      <button type="button" class="btn btn-add" id="brief-draft">✦ Draft brief with AI</button>
+      <button type="button" class="btn btn-add" id="brief-draft">${t("brief.draftButton")}</button>
       <span class="assist-status" id="brief-status"></span>
     </div>
     <div class="brief-fields">
@@ -424,12 +412,12 @@ function initBriefEditor() {
 
 async function draftBrief(section) {
   const statusEl = section.querySelector("#brief-status");
-  statusEl.textContent = "Drafting…";
+  statusEl.textContent = t("brief.drafting");
   try {
     const system =
       "You are a design thinking coach. You help a student synthesize their Discover and Define work " +
       "into a Problem Definition (design brief) that frames the solution space without prescribing a solution. " +
-      "Be specific and grounded in the student's own material; where material is missing, write a pointed placeholder question.";
+      "Be specific and grounded in the student's own material; where material is missing, write a pointed placeholder question." + aiLangInstruction();
     const user =
       `${projectContext()}\n\n` +
       `Draft a Problem Definition (Brief) from this material. Respond with ONLY a JSON object with these keys:\n` +
@@ -453,8 +441,8 @@ async function draftBrief(section) {
     });
     persist();
     statusEl.textContent = filled
-      ? `Filled ${filled} empty field(s). This is a draft — verify and rewrite it in your own words.`
-      : "All fields already have content — clear a field first if you want a fresh draft for it.";
+      ? `${t("brief.filled")} ${filled} ${t("brief.filledEmptyFields")}`
+      : t("brief.allFilled");
   } catch (err) {
     statusEl.textContent = err.message;
   }
@@ -480,13 +468,11 @@ function initEvalPlan() {
   section.className = "brief eval-plan";
   section.id = "eval-plan";
   section.innerHTML = `
-    <h2>Evaluation plan</h2>
-    <p class="workspace-hint">Evaluation is measurement, not opinion. Tie each
-    <a href="#" class="term" data-term="success-criteria">success criterion</a> from your brief to a specific method,
-    a metric with a threshold, and — once you've run it — the actual result. Unmeasured rows show up as gaps in your report.</p>
+    <h2>${t("evalplan.heading")}</h2>
+    <p class="workspace-hint">${t("evalplan.hint")}</p>
     <div class="assist-actions">
-      <button type="button" class="btn btn-add" id="eval-draft">✦ Draft plan from my brief</button>
-      <button type="button" class="btn" id="eval-add-row">+ Add row</button>
+      <button type="button" class="btn btn-add" id="eval-draft">${t("evalplan.draft")}</button>
+      <button type="button" class="btn" id="eval-add-row">${t("evalplan.addRow")}</button>
       <span class="assist-status" id="eval-status"></span>
     </div>
     <div id="eval-rows"></div>
@@ -507,13 +493,13 @@ function renderEvalRows() {
   const container = document.getElementById("eval-rows");
   container.innerHTML = "";
   if (state.evalPlan.length === 0) {
-    container.innerHTML = '<p class="empty-hint">No plan rows yet — draft from your brief or add one manually.</p>';
+    container.innerHTML = `<p class="empty-hint">${t("evalplan.empty")}</p>`;
     return;
   }
 
   const head = document.createElement("div");
   head.className = "eval-row eval-head";
-  head.innerHTML = "<span>Success criterion</span><span>Method</span><span>Metric / threshold</span><span>Result</span><span></span>";
+  head.innerHTML = `<span>${t("evalplan.colCriterion")}</span><span>${t("evalplan.colMethod")}</span><span>${t("evalplan.colMetric")}</span><span>${t("evalplan.colResult")}</span><span></span>`;
   container.appendChild(head);
 
   state.evalPlan.forEach((row) => {
@@ -522,7 +508,7 @@ function renderEvalRows() {
 
     const criterion = document.createElement("textarea");
     criterion.rows = 2;
-    criterion.placeholder = "e.g. Users complete a refill unaided";
+    criterion.placeholder = t("evalplan.criterionPlaceholder");
     criterion.value = row.criterion;
     criterion.addEventListener("input", () => { row.criterion = criterion.value; persist(); });
 
@@ -530,7 +516,7 @@ function renderEvalRows() {
     methodWrap.className = "eval-method";
     const method = document.createElement("select");
     method.innerHTML =
-      '<option value="">Choose method…</option>' +
+      `<option value="">${t("evalplan.chooseMethod")}</option>` +
       EVAL_METHODS.map(([m]) => `<option value="${m}" ${row.method === m ? "selected" : ""}>${m}</option>`).join("");
     if (row.method && !EVAL_METHODS.some(([m]) => m === row.method)) {
       method.insertAdjacentHTML("beforeend", `<option value="${row.method}" selected>${row.method}</option>`);
@@ -540,7 +526,7 @@ function renderEvalRows() {
     guide.target = "_self";
     const setGuide = () => {
       const hit = EVAL_METHODS.find(([m]) => m === method.value);
-      if (hit) { guide.href = `../tools/${hit[1]}.html`; guide.textContent = "method guide →"; guide.hidden = false; }
+      if (hit) { guide.href = `../tools/${hit[1]}.html`; guide.textContent = t("evalplan.methodGuide"); guide.hidden = false; }
       else guide.hidden = true;
     };
     method.addEventListener("change", () => { row.method = method.value; persist(); setGuide(); });
@@ -550,13 +536,13 @@ function renderEvalRows() {
 
     const metric = document.createElement("textarea");
     metric.rows = 2;
-    metric.placeholder = "e.g. ≥ 80% success across 5 users";
+    metric.placeholder = t("evalplan.metricPlaceholder");
     metric.value = row.metric;
     metric.addEventListener("input", () => { row.metric = metric.value; persist(); });
 
     const result = document.createElement("textarea");
     result.rows = 2;
-    result.placeholder = "measured outcome (leave empty until run)";
+    result.placeholder = t("evalplan.resultPlaceholder");
     result.value = row.result;
     result.addEventListener("input", () => { row.result = result.value; persist(); });
 
@@ -564,7 +550,7 @@ function renderEvalRows() {
     del.type = "button";
     del.className = "card-delete";
     del.textContent = "✕";
-    del.title = "Delete row";
+    del.title = t("evalplan.deleteRow");
     del.addEventListener("click", () => {
       state.evalPlan = state.evalPlan.filter((r) => r.id !== row.id);
       persist();
@@ -584,20 +570,20 @@ async function draftEvalPlan() {
   const statusEl = document.getElementById("eval-status");
   if (!briefStarted(state)) {
     statusEl.classList.add("assist-error");
-    statusEl.innerHTML = 'A plan needs criteria to measure — <a href="define.html#brief">write your brief first</a>.';
+    statusEl.innerHTML = `${t("evalplan.needsBrief")}<a href="define.html#brief">${t("evalplan.needsBriefLink")}</a>.`;
     return;
   }
   if (!llmConfigured()) {
     statusEl.classList.add("assist-error");
-    statusEl.innerHTML = 'No API key — add one in <a href="../index.html#settings">Settings on the Canvas page</a>.';
+    statusEl.innerHTML = `${t("evalplan.noKey")}<a href="../index.html#settings">${t("evalplan.noKeyLink")}</a>.`;
     return;
   }
   statusEl.classList.remove("assist-error");
-  statusEl.textContent = "Drafting plan rows…";
+  statusEl.textContent = t("evalplan.drafting");
   try {
     const system =
       "You are a design evaluation specialist. You turn a project's success criteria into a rigorous, measurable " +
-      "evaluation plan. You only use the project's own criteria and content; you never invent results.";
+      "evaluation plan. You only use the project's own criteria and content; you never invent results." + aiLangInstruction();
     const user =
       `${projectContext()}\n\n` +
       `Available methods (use these exact names): ${EVAL_METHODS.map(([m]) => m).join("; ")}.\n\n` +
@@ -622,7 +608,7 @@ async function draftEvalPlan() {
     });
     persist();
     renderEvalRows();
-    statusEl.textContent = "Draft rows added — refine the metrics, then run the tests and record results.";
+    statusEl.textContent = t("evalplan.done");
   } catch (err) {
     statusEl.classList.add("assist-error");
     statusEl.textContent = err.message;
@@ -638,16 +624,15 @@ function initBriefDisplay() {
 
   if (filled.length === 0) {
     section.innerHTML = `
-      <h2>Problem Definition (Brief)</h2>
-      <p class="workspace-hint">No brief yet. The second diamond needs one — every idea, prototype, and test
-      should trace back to it. <a href="define.html#brief">Write the brief on the Define page →</a></p>
+      <h2>${t("brief.heading")}</h2>
+      <p class="workspace-hint">${t("brief.noBrief")}<a href="define.html#brief">${t("brief.writeLink")}</a></p>
     `;
   } else {
     const hmw = phase === "ideate" && state.brief.hmw.trim();
     section.innerHTML = `
-      <h2>Problem Definition (Brief)</h2>
+      <h2>${t("brief.heading")}</h2>
       ${hmw ? '<blockquote class="hmw-headline"></blockquote>' : ""}
-      <p class="workspace-hint">Work in this stage is framed by the brief. <a href="define.html#brief">Edit it on the Define page →</a></p>
+      <p class="workspace-hint">${t("brief.displayHint")}<a href="define.html#brief">${t("brief.editLink")}</a></p>
       <dl class="brief-read">
         ${filled.map(([k, label]) => `<div><dt>${label}</dt><dd></dd></div>`).join("")}
       </dl>

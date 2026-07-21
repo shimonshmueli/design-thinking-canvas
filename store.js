@@ -7,13 +7,13 @@ const LEGACY_KEY = "design-thinking-canvas-v1";
 const PHASES = ["discover", "define", "ideate", "make", "evaluate", "develop", "reflect"];
 
 const BRIEF_FIELDS = [
-  ["problem", "Problem statement"],
-  ["users", "Users & stakeholders"],
-  ["needs", "Needs, wants, aspirations"],
-  ["pov", "Solution point-of-view (approach)"],
-  ["hmw", "How might we…? (HMW)"],
-  ["objectives", "Objectives & constraints"],
-  ["success", "Success criteria"],
+  ["problem", typeof t === "function" ? t("brief.problem") : "Problem statement"],
+  ["users", typeof t === "function" ? t("brief.users") : "Users & stakeholders"],
+  ["needs", typeof t === "function" ? t("brief.needs") : "Needs, wants, aspirations"],
+  ["pov", typeof t === "function" ? t("brief.pov") : "Solution point-of-view (approach)"],
+  ["hmw", typeof t === "function" ? t("brief.hmw") : "How might we…? (HMW)"],
+  ["objectives", typeof t === "function" ? t("brief.objectives") : "Objectives & constraints"],
+  ["success", typeof t === "function" ? t("brief.success") : "Success criteria"],
 ];
 
 const BRIEF_KEYS = BRIEF_FIELDS.map(([k]) => k);
