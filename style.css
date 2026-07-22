@@ -675,6 +675,13 @@ html[data-lang="zh"] :lang(zh) { line-height: 1.9; }
   color: var(--ink-soft);
 }
 
+.footer-copyright {
+  display: block;
+  margin-top: 2px;
+  font-size: 11px;
+  opacity: 0.75;
+}
+
 /* ---------- Responsive ---------- */
 
 @media (max-width: 1000px) {

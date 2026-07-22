@@ -112,6 +112,7 @@ const I18N = {
   },
   "footer.tagline": { en: "Double Diamond tutorial", zh: "双钻石模型教程" },
   "footer.tagline.link": { en: "Design Thinking Canvas", zh: "设计思维画布" },
+  "footer.copyright": { en: "© Shimon Shmueli", zh: "© Shimon Shmueli" },
   "save.status.ok": { en: "Saved locally in this browser", zh: "已保存在本浏览器中" },
   "save.status.fail": { en: "Couldn't save — storage may be full", zh: "保存失败 — 存储空间可能已满" },
 
