@@ -295,6 +295,228 @@ const GLOSSARY = {
     ],
     refs: [["IDEO — Design Thinking FAQ", "https://designthinking.ideo.com/"]],
   },
+
+  // ---- Approach / Attitudes / Thinking chips (dashboard summary strip) ----
+  "zoom-in-out": {
+    title: "Zooming in/out", title_zh: "放大与缩小视角",
+    body: [
+      "Moving deliberately between the big-picture system view and granular, ground-level detail — and back — rather than staying fixed at one altitude. In design thinking this shows up constantly: zoom out to see a user's whole journey or a system's structure, zoom in to a single interaction or data point, then out again to check the part still serves the whole.",
+    ],
+    body_zh: [
+      "有意识地在宏观的系统视角与微观的细节层面之间来回切换，而不是固定停留在某一个高度。在设计思维中这种切换随处可见：放大视角看清用户的整段旅程或系统结构，缩小视角聚焦某个具体交互或数据点，然后再放大以确认局部仍然服务于整体。",
+    ],
+    refs: [["Donella Meadows Project — systems thinking resources", "https://donellameadows.org/systems-thinking-resources/"]],
+  },
+  satisficing: {
+    title: "Optimizing, satisficing, maximizing", title_zh: "优化、满意化、最大化",
+    body: [
+      "Three different standards for 'good enough': maximizing searches for the single best option, optimizing improves a solution against explicit criteria, and satisficing (Herbert Simon's term) accepts the first option that clears a reasonable threshold — the realistic default under real time and information constraints. Design thinking mostly satisfices deliberately, reserving maximizing for the rare case where the stakes justify the cost of an exhaustive search.",
+    ],
+    body_zh: [
+      "三种不同的『足够好』标准：最大化是寻找单一最优选项，优化是依据明确标准改进方案，满意化（赫伯特·西蒙提出的概念）则是接受第一个达到合理门槛的选项——这是在真实的时间与信息限制下更现实的默认策略。设计思维大多有意选择满意化，只有在赌注足够大、值得付出穷尽搜索的代价时，才会转向最大化。",
+    ],
+    refs: [["Wikipedia — Satisficing (Herbert Simon)", "https://en.wikipedia.org/wiki/Satisficing"]],
+  },
+  "reflective-practice": {
+    title: "Reflective practice", title_zh: "反思性实践",
+    body: [
+      "Deliberately thinking about what you're doing while doing it (reflection-in-action) and afterward (reflection-on-action) — examining assumptions, surprises, and results instead of moving on unexamined. Donald Schön's concept of the 'reflective practitioner' underlies this canvas's Reflect & Improve stage: it treats reflection as a professional skill, not an afterthought.",
+    ],
+    body_zh: [
+      "有意识地在行动过程中思考自己在做什么（行动中反思），并在行动之后加以复盘（对行动的反思）——审视假设、意外与结果，而不是不加检视地继续前进。唐纳德·舍恩提出的『反思型实践者』概念，正是本画布『反思与改进』阶段的理论基础：它把反思视为一项专业技能，而不是事后的附加动作。",
+    ],
+    refs: [["Wikipedia — Donald Schön / The Reflective Practitioner", "https://en.wikipedia.org/wiki/Donald_Sch%C3%B6n"]],
+  },
+  empathy: {
+    title: "Empathy", title_zh: "共情",
+    body: [
+      "Understanding a user's experience from the inside — their context, constraints, and feelings, not just their stated requests. It's the foundation of Discover: design decisions grounded in genuine empathy address real needs; decisions grounded only in assumptions tend to solve the designer's own imagined problem.",
+    ],
+    body_zh: [
+      "从内部理解用户的体验——他们的情境、限制与感受，而不只是他们明确提出的要求。这是探索阶段的基础：建立在真实共情之上的设计决策能够回应真实需求；仅凭假设做出的决策，往往只是在解决设计者自己想象出来的问题。",
+    ],
+    refs: [["IDEO Design Kit — Human-Centered Design Toolkit", "https://www.ideo.com/journal/design-kit-the-human-centered-design-toolkit"]],
+  },
+  "human-centered": {
+    title: "Human-centric", title_zh: "以人为本",
+    body: [
+      "Anchoring the whole process in the needs, capabilities, and context of the people who will use the outcome, rather than starting from technology or organizational convenience. ISO 9241-210 formalizes this as a design approach that involves users throughout, and evaluates solutions against real human use.",
+    ],
+    body_zh: [
+      "把整个流程锚定在最终使用者的需求、能力与所处情境之上，而不是从技术或组织的便利性出发。ISO 9241-210 标准将其形式化为一种在全过程中持续纳入用户参与、并依据真实人类使用情况来评估方案的设计方法。",
+    ],
+    refs: [["ISO 9241-210:2019 — Human-centred design for interactive systems", "https://www.iso.org/standard/77520.html"]],
+  },
+  "experiential-learning": {
+    title: "Experiential", title_zh: "体验式",
+    body: [
+      "Learning by doing and reflecting on the doing, rather than by abstract instruction alone. David Kolb's experiential learning cycle — concrete experience, reflective observation, abstract conceptualization, active experimentation — describes why prototyping and testing teach a design team things reading and discussion cannot.",
+    ],
+    body_zh: [
+      "通过实际动手去做、并对所做之事加以反思来学习，而不仅仅依靠抽象的讲授。大卫·科尔布提出的体验式学习循环——具体经验、反思性观察、抽象概念化、主动实验——说明了为什么原型制作与测试能让设计团队学到阅读和讨论无法教给他们的东西。",
+    ],
+    refs: [["Wikipedia — Experiential learning (David Kolb)", "https://en.wikipedia.org/wiki/Experiential_learning"]],
+  },
+  "calculated-risk": {
+    title: "Calculated risk", title_zh: "有计算的风险",
+    body: [
+      "Taking on uncertainty deliberately, after weighing the likely upside against the cost of being wrong — the opposite of both recklessness and risk-avoidance. Cheap, fast experiments (prototypes, MVPs) are how design thinking makes risk-taking calculated: they lower the cost of finding out you're wrong.",
+    ],
+    body_zh: [
+      "在权衡可能的收益与出错代价之后，有意识地承担不确定性——这既不同于鲁莽行事，也不同于回避一切风险。低成本、快速的实验（原型、MVP）正是设计思维让『冒险』变得『可计算』的方式：它们降低了发现自己判断错误所需付出的代价。",
+    ],
+    refs: [["Design Council — Framework for Innovation", "https://www.designcouncil.org.uk/resources/framework-for-innovation/"]],
+  },
+  "balanced-tradeoffs": {
+    title: "Balanced", title_zh: "平衡",
+    body: [
+      "Holding competing goods in tension deliberately — speed vs. rigor, novelty vs. feasibility, user wants vs. business constraints — rather than resolving every trade-off by defaulting to one side. The Develop gate's desirability/feasibility/viability check is this canvas's most explicit balancing act.",
+    ],
+    body_zh: [
+      "有意识地在相互竞争的价值之间保持张力——速度与严谨、新颖性与可行性、用户诉求与商业限制——而不是每次都默认偏向其中一方来解决权衡问题。本画布中开发关卡的合意性/可行性/商业可行性检验，正是最明显的一次平衡行为。",
+    ],
+    refs: [["IDEO — Design Thinking FAQ", "https://designthinking.ideo.com/"]],
+  },
+  embodiment: {
+    title: "Embodiment", title_zh: "具身化",
+    body: [
+      "Understanding and designing interaction as something physically and spatially situated — how a body moves, reaches, holds, and feels — not just an abstract flow of information. Embodied-interaction thinking (Paul Dourish) explains why a sketch, mockup, or physical prototype teaches things a written spec cannot.",
+    ],
+    body_zh: [
+      "把交互理解并设计为一种物理上、空间上真实发生的事情——身体如何移动、伸展、握持与感受——而不仅仅是抽象的信息流。『具身交互』思想（保罗·杜里什提出）解释了为什么一份草图、模型或实体原型能教给我们书面规格说明书做不到的东西。",
+    ],
+    refs: [["Paul Dourish (2001), Where the Action Is: The Foundations of Embodied Interaction", "https://mitpress.mit.edu/9780262541787/where-the-action-is/"]],
+  },
+  "exploratory-approach": {
+    title: "Exploratory", title_zh: "探索性",
+    body: [
+      "Treating early-stage work as open-ended investigation rather than execution of a known plan — following leads, tolerating dead ends, and letting findings redirect the work. Discover and Ideate are explicitly exploratory stages; premature convergence there is a common cause of shallow results.",
+    ],
+    body_zh: [
+      "把早期阶段的工作视为一场开放式的探究，而不是执行一份既定计划——跟随线索、容忍走入死胡同，并让发现的结果来重新引导工作方向。探索与构思阶段被明确设计为探索性阶段；过早在这两个阶段收敛，是导致成果浮于表面的常见原因。",
+    ],
+    refs: [["Design Council — The Double Diamond", "https://www.designcouncil.org.uk/resources/the-double-diamond/"]],
+  },
+  "what-if-thinking": {
+    title: "What-if thinking", title_zh: "假设性思考",
+    body: [
+      "Deliberately entertaining counterfactuals and future scenarios — 'what if this constraint didn't exist?', 'what if we had to solve this in a day?' — to loosen assumptions before committing to a direction. It underlies back-casting and design heuristics as ideation techniques.",
+    ],
+    body_zh: [
+      "有意识地设想反事实情境与未来场景——『如果这个限制条件不存在会怎样？』『如果我们必须在一天内解决这个问题会怎样？』——以此在确定方向之前松动既有假设。它是反向构思法与设计启发法这类构思技巧背后的思维基础。",
+    ],
+    refs: [["Design Council — Framework for Innovation", "https://www.designcouncil.org.uk/resources/framework-for-innovation/"]],
+  },
+  proactive: {
+    title: "Proactive", title_zh: "主动",
+    body: [
+      "Initiating action based on anticipated needs rather than waiting for a problem to force a response — surfacing challenges, testing assumptions, and seeking feedback before being asked. It's the disposition that makes a team choose and scope its own challenges rather than only reacting to assigned ones.",
+    ],
+    body_zh: [
+      "基于预判到的需求主动采取行动，而不是等到问题倒逼才做出回应——在被要求之前就主动发现挑战、检验假设、寻求反馈。正是这种倾向，让一个团队能够主动选择并界定自己的挑战，而不只是被动地应对分配给自己的任务。",
+    ],
+    refs: [["Design Council — Framework for Innovation", "https://www.designcouncil.org.uk/resources/framework-for-innovation/"]],
+  },
+  optimism: {
+    title: "Optimism", title_zh: "乐观",
+    body: [
+      "A working belief that problems — even large, messy ones — are addressable, which is a precondition for attempting them at all. Tim Brown, IDEO's CEO, names optimism explicitly as a design thinking mindset: the confidence that at least one of the many possible solutions being explored will make things better.",
+    ],
+    body_zh: [
+      "一种在实践中持有的信念，即认为问题——即便是庞大而混乱的问题——是可以被处理的，这是愿意去尝试解决它的前提条件。IDEO 首席执行官蒂姆·布朗明确将『乐观』列为设计思维的一种心态：相信在众多正在探索的可能方案中，至少有一个能让情况变得更好。",
+    ],
+    refs: [["Tim Brown (2009), Change by Design", "https://www.ideo.com/journal/change-by-design"]],
+  },
+  "wicked-problems": {
+    title: "Tackle hard / wicked problems", title_zh: "敢于挑战棘手/复杂问题",
+    body: [
+      "A willingness to take on 'wicked problems' — Rittel and Webber's term for problems that are ill-defined, have no stopping rule, and where every attempted solution changes the problem itself — instead of retreating to well-defined, easily solvable ones. Design thinking's iterative loop-back structure (reframing, refining) exists specifically because wicked problems can't be solved in one clean pass.",
+    ],
+    body_zh: [
+      "愿意去承接『棘手问题』——里特尔与韦伯提出的概念，指那些定义不清、没有明确停止规则、且每一次尝试性的解决方案都会改变问题本身的问题——而不是退回到那些定义清晰、容易解决的问题上。设计思维中反复循环（重新框定、打磨方案）的结构，正是因为棘手问题无法一次性、干净利落地被解决而存在的。",
+    ],
+    refs: [["Rittel & Webber (1973), 'Dilemmas in a General Theory of Planning'", "https://en.wikipedia.org/wiki/Wicked_problem"]],
+  },
+  collaboration: {
+    title: "Collaboration", title_zh: "协作",
+    body: [
+      "Working across roles and disciplines as genuine co-creators rather than handing work sequentially from one specialist to the next. Cross-functional collaboration is what lets a team hold user needs, technical feasibility, and business viability in view at the same time instead of optimizing each in isolation.",
+    ],
+    body_zh: [
+      "跨角色、跨学科地作为真正的共创者一起工作，而不是把工作按顺序从一个专才手中交给下一个专才。跨职能协作让团队能够同时兼顾用户需求、技术可行性与商业可行性，而不是各自孤立地优化其中一项。",
+    ],
+    refs: [["IDEO — Design Thinking FAQ", "https://designthinking.ideo.com/"]],
+  },
+  "failure-allowed": {
+    title: "Failure allowed", title_zh: "允许失败",
+    body: [
+      "Treating a failed prototype or test as a valid, expected outcome that produces information — provided it is reflected on and corrected — rather than a result to be hidden or avoided. Stanford d.school lists 'embrace experimentation' among its core mindsets precisely because fear of failure suppresses the cheap, early testing that catches bad ideas before they get expensive.",
+    ],
+    body_zh: [
+      "把失败的原型或测试视为一种正常且预期之内、能够产生有价值信息的结果——前提是对其加以反思并加以修正——而不是要隐藏或回避的结果。斯坦福 d.school 将『拥抱实验』列为其核心心态之一，正是因为对失败的恐惧会抑制那些能在代价变高之前及早发现坏想法的、廉价的早期测试。",
+    ],
+    refs: [["Stanford d.school — Bootcamp Bootleg (mindsets)", "https://dschool.stanford.edu/resources/design-thinking-bootleg"]],
+  },
+  playful: {
+    title: "Playful", title_zh: "玩乐精神",
+    body: [
+      "Approaching exploration and prototyping with genuine lightness — trying obviously silly ideas, building rough things for fun — because playfulness lowers the fear of judgment that otherwise suppresses divergent thinking. It's a deliberate mindset in brainstorming facilitation, not just a personality trait.",
+    ],
+    body_zh: [
+      "以真正轻松的心态去探索和制作原型——尝试明显有点荒谬的想法、纯粹为了好玩去搭建一些粗糙的东西——因为玩乐精神能降低对被评判的恐惧，而这种恐惧原本会抑制发散性思维。在头脑风暴引导中，这是一种被刻意运用的心态，而不仅仅是某种性格特质。",
+    ],
+    refs: [["Stanford d.school — Bootcamp Bootleg (mindsets)", "https://dschool.stanford.edu/resources/design-thinking-bootleg"]],
+  },
+  "creative-confidence": {
+    title: "Creative confidence", title_zh: "创造自信",
+    body: [
+      "The belief — which Tom and David Kelley argue is learnable, not innate — that you are capable of generating and acting on creative ideas. Teams lacking creative confidence self-censor during divergent stages, quietly shrinking the option space before it's ever written down.",
+    ],
+    body_zh: [
+      "一种信念——汤姆·凯利和大卫·凯利认为这是可以后天习得的，而非与生俱来——即相信自己有能力产生创造性想法并据此行动。缺乏创造自信的团队会在发散阶段进行自我审查，在想法还没被写下来之前，就已经在暗中缩小了选项空间。",
+    ],
+    refs: [["Tom Kelley & David Kelley (2013), Creative Confidence", "https://www.creativeconfidence.com/"]],
+  },
+  "bias-to-action": {
+    title: "Bias to action", title_zh: "行动导向",
+    body: [
+      "Preferring to build and test a rough version over continuing to plan or discuss in the abstract. Stanford d.school names it directly as a design thinking mindset: a quick prototype in users' hands produces more real information than another round of internal debate.",
+    ],
+    body_zh: [
+      "更倾向于动手制作并测试一个粗糙版本，而不是继续停留在抽象的规划或讨论阶段。斯坦福 d.school 明确将其列为设计思维的一种心态：一个能尽快交到用户手中的原型，比再进行一轮内部讨论能产生更多真实的信息。",
+    ],
+    refs: [["Stanford d.school — Bootcamp Bootleg (mindsets)", "https://dschool.stanford.edu/resources/design-thinking-bootleg"]],
+  },
+  "rethink-rules": {
+    title: "Rethink (and possibly break) rules", title_zh: "重新思考（并可能打破）规则",
+    body: [
+      "Treating existing constraints, conventions, and 'the way it's always been done' as hypotheses to test rather than fixed boundaries — while still being accountable for the consequences of breaking them. Many genuinely novel concepts come from questioning a rule everyone else in the room had stopped noticing.",
+    ],
+    body_zh: [
+      "把既有的限制条件、惯例，以及『一直以来都是这么做的』这类默认设定，当作可以检验的假设，而不是不可动摇的边界——同时仍然对打破这些规则所带来的后果负责。许多真正新颖的概念，都源于质疑一条房间里其他人早已习以为常、不再留意的规则。",
+    ],
+    refs: [["Design Council — Framework for Innovation", "https://www.designcouncil.org.uk/resources/framework-for-innovation/"]],
+  },
+  holistic: {
+    title: "Holistic", title_zh: "整体性",
+    body: [
+      "Considering a problem or solution as an interconnected whole — how parts affect each other — rather than optimizing individual pieces in isolation and assuming the sum will work. It's the thinking-mode counterpart to zooming out: you can't hold the whole in view without stepping back from the details.",
+    ],
+    body_zh: [
+      "把问题或方案视为一个相互关联的整体来考量——各部分如何彼此影响——而不是孤立地优化各个局部、并想当然地假设整体会自然而然地运作良好。它是『放大缩小视角』在思维模式层面的对应：不从细节中抽身出来，就无法看清整体全貌。",
+    ],
+    refs: [["Donella Meadows Project — systems thinking resources", "https://donellameadows.org/systems-thinking-resources/"]],
+  },
+  "cross-disciplinary": {
+    title: "Cross-disciplinary", title_zh: "跨学科",
+    body: [
+      "Drawing on multiple fields — engineering, business, psychology, art — either through a mixed team or 'T-shaped' individuals with depth in one area and working fluency across others. Tim Brown argues design thinking's real innovations usually happen at the intersections between disciplines, not deep within any single one.",
+    ],
+    body_zh: [
+      "综合运用多个领域的知识——工程、商业、心理学、艺术——既可以通过多元背景组成的团队，也可以依靠『T 型人才』（在一个领域有深度、同时对其他领域有较强的通用能力）来实现。蒂姆·布朗认为，设计思维真正的创新往往发生在不同学科的交汇处，而不是深埋在某一个单一学科内部。",
+    ],
+    refs: [["Tim Brown (2009), Change by Design", "https://www.ideo.com/journal/change-by-design"]],
+  },
 };
 
 /* ---------------- modal ---------------- */

@@ -340,17 +340,17 @@ const I18N = {
   "mode.meta": { en: "Meta", zh: "元阶段" },
 
   // Summary strip
-  "summary.approach.label": { en: "Approach:", zh: "方法：" },
+  "summary.approach.label": { en: "Approach", zh: "方法" },
   "summary.approach.text": {
     en: "zooming-in-out, optimizing/satisficing/maximizing (rarely), reflective, empathic, human-centric, experiential, calculated risk, balanced, embodiment, exploratory, strategic, what-if, proactive…",
     zh: "放大缩小视角、优化/满意化/最大化（较少见）、反思性、共情、以人为本、体验式、有计算的风险、平衡、具身化、探索性、战略性、假设性、主动……",
   },
-  "summary.attitudes.label": { en: "Attitudes / mindsets:", zh: "态度 / 心态：" },
+  "summary.attitudes.label": { en: "Attitudes / mindsets", zh: "态度 / 心态" },
   "summary.attitudes.text": {
     en: "optimism, tackle hard/wicked problems, collaboration, failure allowed (reflected on and corrected), playful, intra/entrepreneurial, creative confidence, bias to action, rethink (and possibly break) rules…",
     zh: "乐观、敢于挑战棘手/复杂问题、协作、允许失败（并加以反思纠正）、玩乐精神、内部创业/创业精神、创造自信、行动导向、重新思考（并可能打破）规则……",
   },
-  "summary.thinking.label": { en: "Thinking:", zh: "思维方式：" },
+  "summary.thinking.label": { en: "Thinking", zh: "思维方式" },
   "summary.thinking.text": { en: "systems, holistic, divergent/convergent, cross-disciplinary", zh: "系统性、整体性、发散/收敛、跨学科" },
 
   // Settings modal
