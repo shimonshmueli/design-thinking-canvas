@@ -981,6 +981,46 @@ html[data-lang="zh"] :lang(zh) { line-height: 1.9; }
 .tool-card h3 { margin: 0 0 4px; font-size: 15px; color: var(--phase-color); }
 .tool-card p { margin: 0; font-size: 12.5px; color: var(--ink-soft); line-height: 1.5; }
 
+/* Decimal enumeration badges (stage.tool, e.g. "1.1") shown on tool cards,
+   tool-page headings, breadcrumbs, and prev/next nav links. */
+.tool-num {
+  display: inline-block;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--phase-color);
+}
+
+.tool-card .tool-num {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  background: color-mix(in srgb, var(--phase-color) 14%, white);
+  padding: 2px 7px;
+  border-radius: 999px;
+  margin-bottom: 6px;
+}
+
+.tool-num.heading-num {
+  font-size: 0.62em;
+  vertical-align: middle;
+  background: color-mix(in srgb, var(--phase-color) 14%, white);
+  padding: 3px 9px;
+  border-radius: 999px;
+  margin-right: 2px;
+}
+
+.tool-num.crumb-num {
+  font-size: 11px;
+  background: color-mix(in srgb, var(--phase-color) 16%, white);
+  padding: 1px 6px;
+  border-radius: 999px;
+  margin-right: 2px;
+}
+
+.tool-num.nav-num {
+  font-size: 11px;
+  opacity: 0.85;
+}
+
 .doc-nav {
   display: flex;
   justify-content: space-between;
