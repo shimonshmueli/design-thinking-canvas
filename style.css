@@ -754,13 +754,29 @@ html[data-lang="zh"] :lang(zh) { line-height: 1.9; }
 
 /* ---------- Process nav (all pages) ---------- */
 
+.doc-nav-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.doc-nav-side {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
 .process-nav {
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-top: 12px;
   overflow-x: auto;
   padding-bottom: 4px;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .pn-home, .pn-step {
