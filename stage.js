@@ -29,13 +29,18 @@ const workspace = document.getElementById("workspace");
 
 let state = loadState();
 
-initAssist();
-initToolWorksheets();
-if (["discover", "define"].includes(phase)) initChallengeDisplay();
-if (phase === "define") initBriefEditor();
-if (["ideate", "make", "evaluate", "develop"].includes(phase)) initBriefDisplay();
-if (phase === "evaluate") initEvalPlan();
-renderList();
+// A real project title is required — set it on the Canvas page first.
+if (needsProjectTitle(state)) {
+  location.replace("../index.html");
+} else {
+  initAssist();
+  initToolWorksheets();
+  if (["discover", "define"].includes(phase)) initChallengeDisplay();
+  if (phase === "define") initBriefEditor();
+  if (["ideate", "make", "evaluate", "develop"].includes(phase)) initBriefDisplay();
+  if (phase === "evaluate") initEvalPlan();
+  renderList();
+}
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();

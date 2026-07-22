@@ -113,6 +113,20 @@ const I18N = {
   "footer.tagline": { en: "Double Diamond tutorial", zh: "双钻石模型教程" },
   "footer.tagline.link": { en: "Design Thinking Canvas", zh: "设计思维画布" },
   "footer.copyright": { en: "© Shimon Shmueli", zh: "© Shimon Shmueli" },
+
+  // Title gate (blocking modal requiring a real project title)
+  "titlegate.heading": { en: "Name your project", zh: "为你的项目命名" },
+  "titlegate.body": {
+    en: "Every page and every AI prompt in this canvas refers back to your project by name. Give it a real, specific title before you start — you can always change it later.",
+    zh: "本画布中的每个页面、每一次 AI 提示都会以项目名称来指代你的项目。请在开始之前为它取一个真实、具体的标题——之后随时可以修改。",
+  },
+  "titlegate.label": { en: "Project title", zh: "项目标题" },
+  "titlegate.placeholder": {
+    en: "e.g. Medication Safety for Home Caregivers",
+    zh: "例如：面向家庭照护者的用药安全",
+  },
+  "titlegate.button": { en: "Start", zh: "开始" },
+  "titlegate.error": { en: "Please enter a real project title to continue.", zh: "请输入一个真实的项目标题以继续。" },
   "save.status.ok": { en: "Saved locally in this browser", zh: "已保存在本浏览器中" },
   "save.status.fail": { en: "Couldn't save — storage may be full", zh: "保存失败 — 存储空间可能已满" },
 

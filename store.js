@@ -3,8 +3,16 @@
 
 const STORAGE_KEY = "design-thinking-canvas-v2";
 const LEGACY_KEY = "design-thinking-canvas-v1";
+const DEFAULT_TITLE = "Untitled Project";
 
 const PHASES = ["discover", "define", "ideate", "make", "evaluate", "develop", "reflect"];
+
+/** True when the project still needs a real, user-chosen title — used to gate the
+ *  dashboard (blocking modal) and every other page (redirect back to the dashboard). */
+function needsProjectTitle(state) {
+  const title = ((state && state.title) || "").trim();
+  return !title || title === DEFAULT_TITLE;
+}
 
 const BRIEF_FIELDS = [
   ["problem", typeof t === "function" ? t("brief.problem") : "Problem statement"],
@@ -20,7 +28,7 @@ const BRIEF_KEYS = BRIEF_FIELDS.map(([k]) => k);
 
 function emptyState() {
   return {
-    title: "Untitled Project",
+    title: DEFAULT_TITLE,
     challenge: "",
     foundations: { challenge: "", themes: "" },
     // Challenge selection worksheet: fit assessment, SWOT, and the accept/scope/reject decision.

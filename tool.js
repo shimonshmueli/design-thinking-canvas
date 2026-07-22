@@ -14,9 +14,15 @@ const list = document.getElementById("card-list");
 const workspace = document.getElementById("workspace");
 
 let state = loadState();
-ensureTool();
-initAssist();
-renderList();
+
+// A real project title is required — set it on the Canvas page first.
+if (needsProjectTitle(state)) {
+  location.replace("../index.html");
+} else {
+  ensureTool();
+  initAssist();
+  renderList();
+}
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();

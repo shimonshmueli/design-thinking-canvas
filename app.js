@@ -36,6 +36,7 @@ function init() {
 
   buildBoard();
   renderAll();
+  initTitleGate();
 
   challengeStatement.addEventListener("input", () => {
     state.challenge = challengeStatement.value;
@@ -99,6 +100,41 @@ function init() {
     if (e.persisted) refreshFromStorage();
   });
   window.addEventListener("focus", refreshFromStorage);
+}
+
+/** Blocking gate: a real project title is required before the canvas is usable.
+ *  The modal has no close button and no backdrop/Escape dismissal — it only
+ *  hides once a non-empty, non-default title is saved. */
+function initTitleGate() {
+  if (!needsProjectTitle(state)) return;
+
+  const modal = document.getElementById("title-gate-modal");
+  const input = document.getElementById("title-gate-input");
+  const error = document.getElementById("title-gate-error");
+  const save = document.getElementById("title-gate-save");
+
+  modal.hidden = false;
+  input.value = state.title === DEFAULT_TITLE ? "" : state.title;
+  input.focus();
+
+  function trySave() {
+    const val = input.value.trim();
+    if (!val || val === DEFAULT_TITLE) {
+      error.hidden = false;
+      input.focus();
+      return;
+    }
+    state.title = val;
+    titleInput.value = val;
+    persist();
+    modal.hidden = true;
+  }
+
+  save.addEventListener("click", trySave);
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") { e.preventDefault(); trySave(); }
+  });
+  input.addEventListener("input", () => { error.hidden = true; });
 }
 
 function refreshFromStorage() {

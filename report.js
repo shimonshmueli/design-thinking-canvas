@@ -34,6 +34,9 @@ const STAGE_ROLES = (typeof getLang === "function" && getLang() === "zh") ? STAG
 
 let state = loadState();
 
+// A real project title is required — set it on the Canvas page first.
+if (needsProjectTitle(state)) location.replace("index.html");
+
 const statusEl = document.getElementById("report-status");
 const outputBox = document.getElementById("report-output");
 const textEl = document.getElementById("report-text");

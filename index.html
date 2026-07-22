@@ -8,6 +8,23 @@
 </head>
 <body>
 
+<div id="title-gate-modal" class="settings-overlay" hidden>
+  <div class="settings-panel" role="dialog" aria-modal="true" aria-label="Name your project">
+    <div class="settings-head">
+      <h2 data-i18n="titlegate.heading">Name your project</h2>
+    </div>
+    <p class="foundation-caption" data-i18n="titlegate.body">Every page and every AI prompt in this canvas refers back to your project by
+    name. Give it a real, specific title before you start — you can always change it later.</p>
+    <label class="settings-field"><span data-i18n="titlegate.label">Project title</span>
+      <input id="title-gate-input" type="text" data-i18n-placeholder="titlegate.placeholder" placeholder="e.g. Medication Safety for Home Caregivers" autocomplete="off">
+    </label>
+    <p class="assist-status assist-error" id="title-gate-error" data-i18n="titlegate.error" hidden>Please enter a real project title to continue.</p>
+    <div class="settings-actions">
+      <button type="button" class="btn btn-add" id="title-gate-save" data-i18n="titlegate.button">Start</button>
+    </div>
+  </div>
+</div>
+
 <header class="app-header">
   <div class="header-top">
     <input id="project-title" class="project-title" type="text" value="Untitled Project" spellcheck="false">
