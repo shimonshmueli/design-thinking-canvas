@@ -264,6 +264,16 @@ function activeMember(state) {
   return id ? teamMember(state, id) : null;
 }
 
+/** Can `identity` delete this entry (stage card or tool-worksheet entry)? The author always
+ *  can; the team leader can delete anyone's; an unattributed entry (no author on record —
+ *  e.g. from before teams existed) can be deleted by any recognized member. Solo projects
+ *  (identity === null, no team context) are unrestricted, matching existing behavior. */
+function canDeleteEntry(card, identity) {
+  if (!identity) return true;
+  if (!card.authorId) return true;
+  return card.authorId === identity.id || identity.role === "leader";
+}
+
 /* ---- Per-phase status: readiness + consolidation drafts ---- */
 
 function ensurePhaseStatus(state, phase) {

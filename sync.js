@@ -263,6 +263,32 @@ async function syncAddEntry(phase, toolSlug, text) {
   dispatchChanged();
 }
 
+/** Server re-enforces author-only edit rights regardless of what the client thinks —
+ *  see lib/logic.js's updateEntry. */
+async function syncUpdateEntry(entryId, text) {
+  const p = loadSyncProject();
+  const creds = loadSyncCreds(p.projectId);
+  await apiFetch(`/api/projects/${p.projectId}/entries`, {
+    method: "PATCH",
+    body: JSON.stringify({ entryId, memberId: creds.memberId, secret: creds.secret, text }),
+  });
+  await pullState();
+  dispatchChanged();
+}
+
+/** Server re-enforces author-or-leader delete rights regardless of what the client thinks —
+ *  see lib/logic.js's deleteEntry. */
+async function syncDeleteEntry(entryId) {
+  const p = loadSyncProject();
+  const creds = loadSyncCreds(p.projectId);
+  await apiFetch(`/api/projects/${p.projectId}/entries`, {
+    method: "DELETE",
+    body: JSON.stringify({ entryId, memberId: creds.memberId, secret: creds.secret }),
+  });
+  await pullState();
+  dispatchChanged();
+}
+
 async function syncSetReady(phase, ready) {
   const p = loadSyncProject();
   const creds = loadSyncCreds(p.projectId);

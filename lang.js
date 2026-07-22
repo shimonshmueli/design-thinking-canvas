@@ -179,6 +179,9 @@ const I18N = {
   "team.joinButton": { en: "Join", zh: "加入" },
   "team.working": { en: "Working…", zh: "处理中…" },
   "team.joinCodeShareLabel": { en: "Share this code so teammates on other devices can join:", zh: "分享此代码，让其他设备上的队友加入：" },
+  "team.copyCode": { en: "Copy", zh: "复制" },
+  "team.copied": { en: "Copied!", zh: "已复制！" },
+  "team.copyFailed": { en: "Copy failed", zh: "复制失败" },
   "team.youAre": { en: "You are", zh: "你的身份是" },
   "team.importPrompt": {
     en: "You have existing cards in this browser. Add them as your own contributions to this team's project?",

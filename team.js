@@ -91,8 +91,8 @@
         <p class="workspace-hint">${t("team.youAre")} <strong>${me ? escapeHtml(me.name) : "?"}</strong> (${me && me.role === "leader" ? t("team.roleLeader") : t("team.roleMember")})</p>
 
         <div class="team-join-code-box">
-          <span>${t("team.joinCodeShareLabel")}</span>
-          <strong class="team-join-code">${escapeHtml(project.joinCode)}</strong>
+          <span class="team-join-code-info">${t("team.joinCodeShareLabel")} <strong class="team-join-code">${escapeHtml(project.joinCode)}</strong></span>
+          <button type="button" class="btn btn-ghost team-copy-btn" id="team-copy-code">${t("team.copyCode")}</button>
         </div>
 
         <h3 class="settings-subhead">${t("team.rosterHeading")}</h3>
@@ -116,6 +116,32 @@
 
   function wireHandlers(overlay) {
     overlay.querySelector("#team-close")?.addEventListener("click", closeTeam);
+
+    overlay.querySelector("#team-copy-code")?.addEventListener("click", async (e) => {
+      const btn = e.currentTarget;
+      const code = loadSyncProject()?.joinCode || "";
+      const original = btn.textContent;
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(code);
+        } else {
+          const ta = document.createElement("textarea");
+          ta.value = code;
+          ta.style.position = "fixed";
+          ta.style.opacity = "0";
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand("copy");
+          document.body.removeChild(ta);
+        }
+        btn.textContent = t("team.copied");
+      } catch (err) {
+        btn.textContent = t("team.copyFailed");
+      }
+      setTimeout(() => {
+        btn.textContent = original;
+      }, 1600);
+    });
 
     overlay.querySelector("#team-create-btn")?.addEventListener("click", async () => {
       const input = overlay.querySelector("#team-create-name");

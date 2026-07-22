@@ -71,14 +71,26 @@ function addEntry(text) {
 function updateEntry(id, text) {
   const card = entries().find((c) => c.id === id);
   if (!card) return;
+  const me = typeof currentIdentity === "function" ? currentIdentity(state) : isTeamProject(state) ? activeMember(state) : null;
+  if (me && card.authorId && card.authorId !== me.id) return; // only the author may edit
   card.text = text;
   persist();
+  if (typeof syncConnected === "function" && syncConnected()) {
+    syncUpdateEntry(id, text).catch((err) => console.warn("Cloud sync failed:", err.message));
+  }
 }
 
 function deleteEntry(id) {
+  const card = entries().find((c) => c.id === id);
+  if (!card) return;
+  const me = typeof currentIdentity === "function" ? currentIdentity(state) : isTeamProject(state) ? activeMember(state) : null;
+  if (typeof canDeleteEntry === "function" && !canDeleteEntry(card, me)) return; // only the author or team leader may delete
   state.tools[slug].cards = entries().filter((c) => c.id !== id);
   persist();
   renderList();
+  if (typeof syncConnected === "function" && syncConnected()) {
+    syncDeleteEntry(id).catch((err) => console.warn("Cloud sync failed:", err.message));
+  }
 }
 
 /** Copy an entry up into the parent stage's cards, tagged with the tool name. */
@@ -105,17 +117,24 @@ function renderEntry(card) {
   const el = document.createElement("div");
   el.className = "card";
 
+  const me = typeof currentIdentity === "function" ? currentIdentity(state) : isTeamProject(state) ? activeMember(state) : null;
+  const canEdit = !me || !card.authorId || card.authorId === me.id;
+  const canDelete = typeof canDeleteEntry === "function" ? canDeleteEntry(card, me) : true;
+
   const textarea = document.createElement("textarea");
   textarea.className = "card-edit";
   textarea.value = card.text;
   textarea.rows = Math.max(2, Math.min(8, Math.ceil(card.text.length / 60)));
+  if (!canEdit) textarea.readOnly = true;
   textarea.addEventListener("input", () => {
     textarea.rows = Math.max(2, Math.min(8, Math.ceil(textarea.value.length / 60)));
   });
   textarea.addEventListener("blur", () => {
+    if (!canEdit) return;
     const text = textarea.value.trim();
     if (!text) {
-      deleteEntry(card.id);
+      if (canDelete) deleteEntry(card.id);
+      else textarea.value = card.text;
       return;
     }
     updateEntry(card.id, text);
@@ -145,14 +164,17 @@ function renderEntry(card) {
   promote.title = `Add this entry as a card in the ${phase} stage`;
   promote.addEventListener("click", () => promoteEntry(card, promote));
 
-  const del = document.createElement("button");
-  del.className = "card-delete";
-  del.type = "button";
-  del.textContent = t("workspace.delete");
-  del.addEventListener("click", () => deleteEntry(card.id));
+  let del = null;
+  if (canDelete) {
+    del = document.createElement("button");
+    del.className = "card-delete";
+    del.type = "button";
+    del.textContent = t("workspace.delete");
+    del.addEventListener("click", () => deleteEntry(card.id));
+  }
 
   actions.appendChild(promote);
-  actions.appendChild(del);
+  if (del) actions.appendChild(del);
   meta.appendChild(date);
   meta.appendChild(actions);
   el.appendChild(textarea);

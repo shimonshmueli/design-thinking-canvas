@@ -996,6 +996,19 @@ html[data-lang="zh"] :lang(zh) { line-height: 1.9; }
   color: var(--ink);
 }
 
+.team-join-code-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.team-copy-btn {
+  flex-shrink: 0;
+  padding: 4px 10px;
+  font-size: 12px;
+}
+
 .team-add-row {
   display: flex;
   gap: 8px;
