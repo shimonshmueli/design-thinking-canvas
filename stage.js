@@ -35,6 +35,7 @@ if (needsProjectTitle(state)) {
 } else {
   initAssist();
   initToolWorksheets();
+  initTeamPhasePanel();
   if (["discover", "define"].includes(phase)) initChallengeDisplay();
   if (phase === "define") initBriefEditor();
   if (["ideate", "make", "evaluate", "develop"].includes(phase)) initBriefDisplay();
@@ -59,6 +60,13 @@ window.addEventListener("pageshow", (e) => {
   }
 });
 
+// The team roster / active-identity switcher lives in team.js's global modal;
+// when it changes, refresh both the card list (author tags) and this phase's panel.
+document.addEventListener("dtc-team-changed", () => {
+  renderList();
+  renderTeamPhasePanel();
+});
+
 /* ---------------- state ---------------- */
 
 function persist() {
@@ -68,7 +76,8 @@ function persist() {
 /* ---------------- cards ---------------- */
 
 function addCard(text) {
-  state.cards[phase].push(newCard(text));
+  const me = isTeamProject(state) ? activeMember(state) : null;
+  state.cards[phase].push(newCard(text, me));
   persist();
   renderList();
 }
@@ -121,6 +130,13 @@ function renderCard(card) {
 
   const meta = document.createElement("div");
   meta.className = "card-meta";
+
+  if (isTeamProject(state) && card.authorName) {
+    const author = document.createElement("span");
+    author.className = "card-author";
+    author.textContent = card.authorName;
+    meta.appendChild(author);
+  }
 
   const date = document.createElement("span");
   date.className = "card-date";
@@ -231,6 +247,149 @@ function initToolWorksheets() {
       .join("") +
     `</ul>`;
   workspace.insertBefore(box, form);
+}
+
+/* ---------------- Team: readiness + gated AI consolidation ----------------
+ * Only rendered when the project has a team (team.js's roster modal creates
+ * one). Individual cards above are never edited by teammates — this panel
+ * only ever *adds* a new, clearly-attributed "Team (consolidated)" card, and
+ * only once the team's chosen approval rule is satisfied. The LLM proposes;
+ * it never finalizes anything on its own. */
+
+function initTeamPhasePanel() {
+  if (!isTeamProject(state)) return;
+  const panel = document.createElement("section");
+  panel.className = "team-phase-panel";
+  panel.id = "team-phase-panel";
+  workspace.insertBefore(panel, form);
+  renderTeamPhasePanel();
+}
+
+function renderTeamPhasePanel() {
+  const panel = document.getElementById("team-phase-panel");
+  if (!panel || !isTeamProject(state)) return;
+
+  const me = activeMember(state);
+  const ps = ensurePhaseStatus(state, phase);
+  const drafts = ensureConsolidations(state, phase);
+  const pendingDraft = drafts.find((d) => d.status === "draft");
+
+  const statusLabel = { collecting: t("team.status.collecting"), consolidating: t("team.status.consolidating"), locked: t("team.status.locked") }[ps.status];
+
+  const readinessRows = state.team.members
+    .map((m) => {
+      const ready = isReady(state, phase, m.id);
+      const mine = me && me.id === m.id;
+      return `
+        <li class="team-ready-row">
+          <label>
+            <input type="checkbox" class="team-ready-check" data-id="${m.id}" ${ready ? "checked" : ""} ${mine ? "" : "disabled"}>
+            ${m.name}${mine ? " " + t("team.readyYou") : ""}
+          </label>
+        </li>`;
+    })
+    .join("");
+
+  let actionHtml = "";
+  if (!me) {
+    actionHtml = `<p class="assist-status">${t("team.pickIdentity")}<a href="#" id="team-pick-identity-link">${t("team.pickIdentityLink")}</a></p>`;
+  } else if (pendingDraft) {
+    const approved = pendingDraft.approvals.length;
+    const needed = state.team.settings.approvalRule === "leader" ? 1 : state.team.members.length;
+    const iApproved = pendingDraft.approvals.includes(me.id);
+    const canIApprove = canApprove(state, me.id) && !iApproved;
+    actionHtml = `
+      <div class="team-draft">
+        <h4>${t("team.draftHeading")}</h4>
+        <p class="team-draft-text"></p>
+        <p class="workspace-hint">${t("team.draftApprovals")} ${approved}/${needed}</p>
+        <div class="settings-actions">
+          <button type="button" class="btn btn-add" id="team-approve-btn" ${canIApprove ? "" : "disabled"}>${t("team.approveButton")}</button>
+          <button type="button" class="btn btn-ghost" id="team-reject-btn">${t("team.rejectButton")}</button>
+        </div>
+      </div>`;
+  } else if (ps.status === "locked") {
+    actionHtml = `<div class="settings-actions">
+      ${isLeader(state, me.id) ? `<button type="button" class="btn btn-ghost" id="team-reopen-btn">${t("team.reopenButton")}</button>` : ""}
+    </div>`;
+  } else {
+    const allowed = canConsolidate(state, phase, me.id);
+    actionHtml = `
+      <div class="settings-actions">
+        <button type="button" class="btn btn-add" id="team-consolidate-btn" ${allowed ? "" : "disabled"}>${t("team.consolidateButton")}</button>
+        <span class="assist-status" id="team-consolidate-status"></span>
+      </div>
+      ${allowed ? "" : `<p class="settings-opt">${state.team.settings.approvalRule === "leader" ? t("team.needsLeader") : t("team.needsConsensus")}</p>`}`;
+  }
+
+  panel.innerHTML = `
+    <h3>${t("team.phaseHeading")} <span class="team-status-badge team-status-${ps.status}">${statusLabel}</span></h3>
+    <ul class="team-ready-list">${readinessRows}</ul>
+    ${actionHtml}
+  `;
+  if (pendingDraft) panel.querySelector(".team-draft-text").textContent = pendingDraft.text;
+
+  panel.querySelectorAll(".team-ready-check").forEach((cb) => {
+    cb.addEventListener("change", () => {
+      setReady(state, phase, cb.dataset.id, cb.checked);
+      persist();
+      renderTeamPhasePanel();
+    });
+  });
+  panel.querySelector("#team-pick-identity-link")?.addEventListener("click", (e) => {
+    e.preventDefault();
+    if (typeof openTeamPanel === "function") openTeamPanel();
+  });
+  panel.querySelector("#team-consolidate-btn")?.addEventListener("click", () => consolidatePhase());
+  panel.querySelector("#team-approve-btn")?.addEventListener("click", () => {
+    approveConsolidationDraft(state, phase, pendingDraft.id, me.id);
+    persist();
+    renderList();
+    renderTeamPhasePanel();
+  });
+  panel.querySelector("#team-reject-btn")?.addEventListener("click", () => {
+    rejectConsolidationDraft(state, phase, pendingDraft.id);
+    persist();
+    renderTeamPhasePanel();
+  });
+  panel.querySelector("#team-reopen-btn")?.addEventListener("click", () => {
+    reopenPhase(state, phase);
+    persist();
+    renderTeamPhasePanel();
+  });
+}
+
+async function consolidatePhase() {
+  const statusEl = document.getElementById("team-consolidate-status");
+  const me = activeMember(state);
+  if (!me || !canConsolidate(state, phase, me.id)) return;
+  if (!llmConfigured()) {
+    statusEl.innerHTML = `${t("assist.noKey")}<a href="../index.html#settings">${t("assist.noKeyLink")}</a>.`;
+    return;
+  }
+  statusEl.textContent = t("assist.contacting");
+  try {
+    const cards = state.cards[phase];
+    const attributed = cards.map((c) => `- (${c.authorName || t("team.unattributed")}): ${c.text}`).join("\n") || t("team.noCardsYet");
+    const system =
+      "You are a design thinking facilitator. A team submitted individual contributions for one stage; you draft a " +
+      "single consolidated team summary from them for the team to review and approve. Preserve genuinely distinct " +
+      "ideas; if contributors disagree, say so explicitly rather than flattening it into vague consensus. " +
+      "You are proposing a draft — the team decides whether to accept it, not you." + aiLangInstruction();
+    const user =
+      `${projectContext()}\n\n` +
+      `Individual entries submitted for the ${phase} stage:\n${attributed}\n\n` +
+      `Write one consolidated summary (a short paragraph or a few bullet-style sentences) synthesizing these into ` +
+      `the team's shared position for this stage. Respond with ONLY the summary text, no preamble.`;
+
+    const text = await llmComplete(system, user);
+    addConsolidationDraft(state, phase, text.trim(), cards.map((c) => c.id), me.id);
+    persist();
+    renderTeamPhasePanel();
+  } catch (err) {
+    statusEl.classList.add("assist-error");
+    statusEl.textContent = err instanceof TypeError ? t("assist.networkErr") : err.message;
+  }
 }
 
 /** Show the user-authored challenge on the problem-space pages. */

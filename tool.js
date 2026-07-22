@@ -59,7 +59,8 @@ function persist() {
 /* ---------------- entries ---------------- */
 
 function addEntry(text) {
-  entries().push(newCard(text));
+  const me = isTeamProject(state) ? activeMember(state) : null;
+  entries().push(newCard(text, me));
   persist();
   renderList();
 }
@@ -119,6 +120,13 @@ function renderEntry(card) {
 
   const meta = document.createElement("div");
   meta.className = "card-meta";
+
+  if (isTeamProject(state) && card.authorName) {
+    const author = document.createElement("span");
+    author.className = "card-author";
+    author.textContent = card.authorName;
+    meta.appendChild(author);
+  }
 
   const date = document.createElement("span");
   date.className = "card-date";
