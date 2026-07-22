@@ -1009,6 +1009,118 @@ html[data-lang="zh"] :lang(zh) { line-height: 1.9; }
   font-size: 12px;
 }
 
+/* ---------- UX: header data menu, intro card, collapsibles ---------- */
+
+.header-menu {
+  position: relative;
+  display: inline-block;
+}
+.header-menu > summary {
+  list-style: none;
+  cursor: pointer;
+}
+.header-menu > summary::-webkit-details-marker { display: none; }
+.header-menu-list {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 150px;
+  padding: 8px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 24px rgba(20, 30, 50, 0.14);
+}
+.header-menu-list .btn { width: 100%; text-align: left; }
+
+.intro-card {
+  position: relative;
+  margin: 0 0 20px;
+  padding: 18px 22px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--discover) 8%, white), var(--panel));
+  border: 1px solid color-mix(in srgb, var(--discover) 30%, var(--border));
+  border-radius: var(--radius);
+}
+.intro-heading { margin: 0 0 10px; font-size: 15px; }
+.intro-steps {
+  margin: 0 0 12px;
+  padding-left: 20px;
+  color: var(--ink);
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+.intro-note {
+  margin: 4px 0 0;
+  font-size: 12.5px;
+  color: var(--ink-soft);
+}
+.intro-note a { color: var(--discover); font-weight: 600; }
+.intro-dismiss {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+}
+.intro-dismiss:hover { color: var(--ink); border-color: var(--ink-soft); }
+
+/* Collapsible Selection Worksheet */
+.selection-box > .selection-summary {
+  cursor: pointer;
+  list-style: none;
+  font-size: 13px;
+  color: var(--ink-soft);
+  padding: 2px 0 2px 22px;
+  position: relative;
+}
+.selection-box > .selection-summary::-webkit-details-marker { display: none; }
+.selection-box > .selection-summary::before {
+  content: "▸";
+  position: absolute;
+  left: 4px;
+  color: var(--ink-soft);
+  transition: transform 0.15s ease;
+}
+.selection-box[open] > .selection-summary::before { transform: rotate(90deg); }
+.selection-body { margin-top: 14px; }
+
+.team-ready-explain { margin: 8px 0 12px; }
+
+/* Stage/tool pages: jump-to-workspace link + collapsible tool grid */
+.workspace-jump {
+  display: inline-block;
+  margin: 4px 0 8px;
+}
+.tools-collapse > summary {
+  cursor: pointer;
+  list-style: none;
+  font-size: 1.15em;
+  font-weight: 600;
+  margin: 1.2em 0 0.6em;
+  padding-left: 22px;
+  position: relative;
+}
+.tools-collapse > summary::-webkit-details-marker { display: none; }
+.tools-collapse > summary::before {
+  content: "▸";
+  position: absolute;
+  left: 2px;
+  font-weight: 400;
+  color: var(--ink-soft);
+  transition: transform 0.15s ease;
+}
+.tools-collapse[open] > summary::before { transform: rotate(90deg); }
+
 .team-add-row {
   display: flex;
   gap: 8px;

@@ -30,12 +30,17 @@
     <input id="project-title" class="project-title" type="text" value="Untitled Project" spellcheck="false">
     <div class="header-actions">
       <span class="lang-switch-mount"></span>
-      <button id="open-team" class="btn btn-ghost" title="Team roster and who you're acting as">Solo</button>
+      <button id="open-team" class="btn btn-ghost" title="Team roster and cloud sync">👥 Team</button>
       <button id="open-settings" class="btn btn-ghost" data-i18n="header.settings" data-i18n-title="header.settings" title="Your name, LLM provider, and API key">⚙ Settings</button>
-      <button id="export-json" class="btn btn-ghost" data-i18n="header.export" data-i18n-title="header.export.title" title="Save canvas as a .json file">Export</button>
-      <button id="import-json" class="btn btn-ghost" data-i18n="header.import" data-i18n-title="header.import.title" title="Load a previously exported .json file">Import</button>
-      <input id="import-file" type="file" accept="application/json" hidden>
-      <button id="clear-canvas" class="btn btn-danger" data-i18n="header.clear" data-i18n-title="header.clear.title" title="Delete every card">Clear</button>
+      <details class="header-menu" id="data-menu">
+        <summary class="btn btn-ghost" data-i18n="header.data" data-i18n-title="header.data.title" title="Export, import, or clear this canvas">Data ▾</summary>
+        <div class="header-menu-list">
+          <button id="export-json" class="btn btn-ghost" data-i18n="header.export" data-i18n-title="header.export.title" title="Save canvas as a .json file">Export</button>
+          <button id="import-json" class="btn btn-ghost" data-i18n="header.import" data-i18n-title="header.import.title" title="Load a previously exported .json file">Import</button>
+          <input id="import-file" type="file" accept="application/json" hidden>
+          <button id="clear-canvas" class="btn btn-danger" data-i18n="header.clear" data-i18n-title="header.clear.title" title="Delete every card">Clear</button>
+        </div>
+      </details>
     </div>
   </div>
   <p class="app-subtitle" data-i18n="app.subtitle">Double Diamond &amp; Design Thinking Methods — Discover → Define → Ideate → Make → Evaluate → Develop → Reflect &amp; Improve</p>
@@ -53,6 +58,25 @@
 </header>
 
 <main class="page">
+
+  <!-- ============ ONBOARDING INTRO (dismissible) ============ -->
+  <section class="intro-card" id="intro-card" hidden>
+    <button type="button" class="intro-dismiss" id="intro-dismiss" data-i18n="intro.dismiss" aria-label="Dismiss">Got it</button>
+    <h3 class="intro-heading" data-i18n="intro.heading">Welcome — here's how this canvas works</h3>
+    <ol class="intro-steps">
+      <li data-i18n="intro.step1">Name and scope your challenge on this page.</li>
+      <li data-i18n="intro.step2">Open each stage (Discover → Reflect) to do the real work.</li>
+      <li data-i18n="intro.step3">Generate a report when you're done.</li>
+    </ol>
+    <p class="intro-note">
+      <span data-i18n="intro.team">Working with classmates?</span>
+      <a href="#" id="intro-team-link" data-i18n="intro.teamLink">Start a team</a><span data-i18n="intro.teamSuffix"> to sync across everyone's devices.</span>
+    </p>
+    <p class="intro-note">
+      <span data-i18n="intro.ai">The ✦ AI helpers are optional — add your own API key in</span>
+      <a href="#settings" id="intro-ai-link" data-i18n="intro.aiLink">Settings</a><span data-i18n="intro.aiSuffix"> to enable them.</span>
+    </p>
+  </section>
 
   <!-- ============ CHALLENGE ============ -->
   <section class="challenge">
@@ -73,8 +97,9 @@
   <!-- ============ CHALLENGE SELECTION WORKSHEET ============ -->
   <section class="selection">
     <h3 class="section-label" data-i18n="selection.sectionLabel">Challenge selection worksheet</h3>
-    <div class="challenge-box selection-box">
-      <p class="foundation-caption" data-i18n="selection.intro">Do the fit assessment for real, then decide: accept, scope down, or reject.</p>
+    <details class="challenge-box selection-box" id="selection-collapse" open>
+      <summary class="selection-summary" data-i18n="selection.intro">Do the fit assessment for real, then decide: accept, scope down, or reject.</summary>
+      <div class="selection-body">
 
       <label class="brief-field selection-background"><span data-i18n="selection.background.label">Team / personal background</span>
         <textarea id="sel-background" data-i18n-placeholder="selection.background.placeholder" placeholder="Who is doing this? Skills, domain knowledge, networks, resources, constraints — the honest picture the fit assessment should be measured against."></textarea>
@@ -135,7 +160,8 @@
           <textarea id="sel-scoped" data-i18n-placeholder="selection.scoped.placeholder" placeholder="e.g. World hunger → reduce food insecurity among seniors in our county"></textarea>
         </label>
       </div>
-    </div>
+      </div>
+    </details>
   </section>
 
   <!-- ============ FOUNDATIONS ============ -->

@@ -95,6 +95,12 @@ function init() {
   document.getElementById("import-json").addEventListener("click", () => importInput.click());
   importInput.addEventListener("change", importJSON);
 
+  initIntroCard();
+  initSelectionCollapse();
+  initDataMenu();
+  updateSaveStatusMode();
+  document.addEventListener("dtc-team-changed", updateSaveStatusMode);
+
   // Refresh summaries when returning from a stage page (including bfcache restores).
   window.addEventListener("pageshow", (e) => {
     if (e.persisted) refreshFromStorage();
@@ -375,17 +381,85 @@ function renderSummary(phase) {
   }
 }
 
+function cloudConnected() {
+  return typeof syncConnected === "function" && syncConnected();
+}
+
 function persist() {
   if (persistState(state)) {
-    flashSaveStatus(t("save.status.ok"));
+    flashSaveStatus(cloudConnected() ? t("save.status.synced") : t("save.status.ok"));
   } else {
     flashSaveStatus(t("save.status.fail"), true);
   }
 }
 
+/** Set the idle save-status label to reflect whether we're cloud-synced or local-only
+ *  (called on load and whenever team connection changes). */
+function updateSaveStatusMode() {
+  flashSaveStatus(cloudConnected() ? t("save.status.synced") : t("save.status.ok"));
+}
+
 function flashSaveStatus(msg, isError = false) {
   saveStatus.textContent = msg;
   saveStatus.style.color = isError ? "#b3261e" : "";
+}
+
+/* ---------------- onboarding / UX preferences ---------------- */
+
+const INTRO_DISMISS_KEY = "dtc-intro-dismissed";
+const SELECTION_OPEN_KEY = "dtc-selection-open";
+
+/** First-load welcome card: 3-step how-it-works, a team nudge, and an AI-is-optional note.
+ *  Dismissed permanently once the user clicks "Got it". */
+function initIntroCard() {
+  const card = document.getElementById("intro-card");
+  if (!card) return;
+  let dismissed = false;
+  try {
+    dismissed = localStorage.getItem(INTRO_DISMISS_KEY) === "1";
+  } catch {}
+  if (!dismissed) card.hidden = false;
+
+  document.getElementById("intro-dismiss")?.addEventListener("click", () => {
+    card.hidden = true;
+    try {
+      localStorage.setItem(INTRO_DISMISS_KEY, "1");
+    } catch {}
+  });
+  document.getElementById("intro-team-link")?.addEventListener("click", (e) => {
+    e.preventDefault();
+    if (typeof openTeamPanel === "function") openTeamPanel();
+  });
+  document.getElementById("intro-ai-link")?.addEventListener("click", (e) => {
+    e.preventDefault();
+    if (typeof openSettings === "function") openSettings();
+  });
+}
+
+/** The heavy Challenge Selection Worksheet is collapsible; remember the user's choice. */
+function initSelectionCollapse() {
+  const d = document.getElementById("selection-collapse");
+  if (!d) return;
+  try {
+    if (localStorage.getItem(SELECTION_OPEN_KEY) === "0") d.open = false;
+  } catch {}
+  d.addEventListener("toggle", () => {
+    try {
+      localStorage.setItem(SELECTION_OPEN_KEY, d.open ? "1" : "0");
+    } catch {}
+  });
+}
+
+/** Header "Data ▾" dropdown (Export / Import / Clear): close on outside click or after use. */
+function initDataMenu() {
+  const menu = document.getElementById("data-menu");
+  if (!menu) return;
+  document.addEventListener("click", (e) => {
+    if (menu.open && !menu.contains(e.target)) menu.open = false;
+  });
+  menu.querySelectorAll(".header-menu-list button").forEach((b) =>
+    b.addEventListener("click", () => (menu.open = false))
+  );
 }
 
 function exportJSON() {

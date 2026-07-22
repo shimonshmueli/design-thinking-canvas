@@ -143,8 +143,10 @@ function renderCard(card) {
     if (!canEdit) return;
     const text = textarea.value.trim();
     if (!text) {
-      if (canDelete) deleteCard(card.id);
-      else textarea.value = card.text;
+      // Never silently delete a card just because it was cleared — restore the previous
+      // text. Removing a card is only ever done via its explicit ✕ button.
+      textarea.value = card.text;
+      textarea.rows = Math.max(2, Math.min(8, Math.ceil(card.text.length / 60)));
       return;
     }
     updateCard(card.id, text);
@@ -354,9 +356,15 @@ function renderTeamPhasePanel() {
       ${allowed ? "" : `<p class="settings-opt">${state.team.settings.approvalRule === "leader" ? t("team.needsLeader") : t("team.needsConsensus")}</p>`}`;
   }
 
+  const explainHtml =
+    me && ps.status === "collecting"
+      ? `<p class="workspace-hint team-ready-explain">${state.team.settings.approvalRule === "leader" ? t("team.readyExplainLeader") : t("team.readyExplainConsensus")}</p>`
+      : "";
+
   panel.innerHTML = `
     <h3>${t("team.phaseHeading")} <span class="team-status-badge team-status-${ps.status}">${statusLabel}</span></h3>
     <ul class="team-ready-list">${readinessRows}</ul>
+    ${explainHtml}
     ${actionHtml}
   `;
   if (pendingDraft) panel.querySelector(".team-draft-text").textContent = pendingDraft.text;

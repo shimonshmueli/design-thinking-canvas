@@ -133,8 +133,10 @@ function renderEntry(card) {
     if (!canEdit) return;
     const text = textarea.value.trim();
     if (!text) {
-      if (canDelete) deleteEntry(card.id);
-      else textarea.value = card.text;
+      // Never silently delete an entry just because it was cleared — restore the previous
+      // text. Removing an entry is only ever done via its explicit ✕ button.
+      textarea.value = card.text;
+      textarea.rows = Math.max(2, Math.min(8, Math.ceil(card.text.length / 60)));
       return;
     }
     updateEntry(card.id, text);

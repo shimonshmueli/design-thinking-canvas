@@ -87,7 +87,7 @@ function mountLangSwitch() {
 
 const I18N = {
   // Header / nav
-  "nav.canvas": { en: "◉ Canvas", zh: "◉ 画布" },
+  "nav.canvas": { en: "◉ Home", zh: "◉ 主页" },
   "nav.report": { en: "▤ Report", zh: "▤ 报告" },
   "nav.stage.discover": { en: "Discover", zh: "探索" },
   "nav.stage.define": { en: "Define", zh: "定义" },
@@ -96,7 +96,7 @@ const I18N = {
   "nav.stage.evaluate": { en: "Evaluate", zh: "评估" },
   "nav.stage.develop": { en: "Develop", zh: "开发" },
   "nav.stage.reflect": { en: "Reflect", zh: "反思" },
-  "crumb.canvas": { en: "Canvas", zh: "画布" },
+  "crumb.canvas": { en: "Home", zh: "主页" },
   "crumb.report": { en: "Project Report", zh: "项目报告" },
 
   "header.settings": { en: "⚙ Settings", zh: "⚙ 设置" },
@@ -106,6 +106,8 @@ const I18N = {
   "header.import.title": { en: "Load a previously exported .json file", zh: "加载之前导出的 .json 文件" },
   "header.clear": { en: "Clear", zh: "清空" },
   "header.clear.title": { en: "Delete every card", zh: "删除所有卡片" },
+  "header.data": { en: "Data ▾", zh: "数据 ▾" },
+  "header.data.title": { en: "Export, import, or clear this canvas", zh: "导出、导入或清空此画布" },
   "app.subtitle": {
     en: "Double Diamond & Design Thinking Methods — Discover → Define → Ideate → Make → Evaluate → Develop → Reflect & Improve",
     zh: "双钻石模型与设计思维方法 — 探索 → 定义 → 构思 → 制作 → 评估 → 开发 → 反思与改进",
@@ -153,7 +155,7 @@ const I18N = {
     en: "Each teammate picks their own name here on their own device — this decides who your entries are attributed to.",
     zh: "每位队友在自己的设备上于此选择自己的姓名——这决定了你的条目会署名给谁。",
   },
-  "team.headerLabelSolo": { en: "Solo", zh: "个人" },
+  "team.headerLabelSolo": { en: "👥 Team", zh: "👥 团队" },
   "team.headerLabelTeam": { en: "👥 Team", zh: "👥 团队" },
   "team.cannotRemoveLastLeader": { en: "Can't remove the only leader — promote another member first.", zh: "无法移除唯一的组长——请先指定另一位成员为组长。" },
   "team.status.collecting": { en: "Collecting", zh: "收集中" },
@@ -171,6 +173,8 @@ const I18N = {
   "team.needsLeader": { en: "Only the team leader can start consolidation.", zh: "只有组长可以发起合并。" },
   "team.needsConsensus": { en: "Everyone must mark themselves ready before consolidation can start.", zh: "所有人都需先标记「已完成」才能开始合并。" },
   "team.phaseHeading": { en: "Team", zh: "团队" },
+  "team.readyExplainLeader": { en: "Tick “ready” when your own cards for this stage are done. Once you're all set, the team leader asks the AI to draft a consolidated summary — everyone sees it before it's saved, and nothing replaces your individual cards.", zh: "当你为本阶段撰写的卡片完成后，请勾选「已完成」。所有人就绪后，由组长请 AI 起草一份合并摘要——保存前所有人都会看到，且不会替换你的个人卡片。" },
+  "team.readyExplainConsensus": { en: "Tick “ready” when your own cards for this stage are done. Once everyone is ready, any member can ask the AI to draft a consolidated summary — everyone approves it before it's saved, and nothing replaces your individual cards.", zh: "当你为本阶段撰写的卡片完成后，请勾选「已完成」。所有人就绪后，任何成员都可以请 AI 起草一份合并摘要——保存前需全体批准，且不会替换你的个人卡片。" },
   "team.unattributed": { en: "unattributed", zh: "未署名" },
   "team.noCardsYet": { en: "(no cards yet)", zh: "（暂无卡片）" },
   "team.yourNameLabel": { en: "Your name", zh: "你的姓名" },
@@ -191,7 +195,25 @@ const I18N = {
   "team.loadingHint": { en: "Connecting to the team's project…", zh: "正在连接团队项目…" },
 
   "save.status.ok": { en: "Saved locally in this browser", zh: "已保存在本浏览器中" },
+  "save.status.synced": { en: "☁ Synced with your team", zh: "☁ 已与团队同步" },
   "save.status.fail": { en: "Couldn't save — storage may be full", zh: "保存失败 — 存储空间可能已满" },
+
+  // Onboarding intro card (dashboard, dismissible)
+  "intro.heading": { en: "Welcome — here's how this canvas works", zh: "欢迎——这个画布这样用" },
+  "intro.step1": { en: "Name and scope your challenge on this page.", zh: "在本页命名并界定你的挑战范围。" },
+  "intro.step2": { en: "Open each stage (Discover → Reflect) to do the real work.", zh: "打开每个阶段（探索 → 反思）来完成实际工作。" },
+  "intro.step3": { en: "Generate a report when you're done.", zh: "完成后生成一份报告。" },
+  "intro.team": { en: "Working with classmates?", zh: "和同学一起做？" },
+  "intro.teamLink": { en: "Start a team", zh: "创建团队" },
+  "intro.teamSuffix": { en: " to sync across everyone's devices.", zh: "，即可在所有人的设备间同步。" },
+  "intro.ai": { en: "The ✦ AI helpers are optional — add your own API key in", zh: "✦ AI 助手为可选功能——请在" },
+  "intro.aiLink": { en: "Settings", zh: "设置" },
+  "intro.aiSuffix": { en: " to enable them.", zh: "中添加你自己的 API 密钥以启用。" },
+  "intro.dismiss": { en: "Got it", zh: "知道了" },
+
+  // Workspace jump (stage & tool pages)
+  "workspace.jump": { en: "↓ Jump to workspace", zh: "↓ 跳到工作区" },
+  "workspace.toolsToggle": { en: "Tools & methods for this stage", zh: "本阶段的工具与方法" },
 
   // Challenge panel
   "challenge.sectionLabel": { en: "Challenge — the starting point (C)", zh: "挑战 — 起点（C）" },
@@ -358,7 +380,7 @@ const I18N = {
   },
 
   // Board / dashboard
-  "board.sectionLabel": { en: "Canvas", zh: "画布" },
+  "board.sectionLabel": { en: "Stage summary", zh: "阶段总览" },
   "board.note": {
     en: "These columns are summaries. The actual work — cards, worksheets, AI assist — happens on each stage's own page: open a workspace to begin.",
     zh: "以下各列只是摘要。实际的工作——卡片、工作表、AI 协助——都在各阶段自己的页面上进行：打开工作区即可开始。",
