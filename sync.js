@@ -11,28 +11,31 @@
 // Requires store.js (state, persist, PHASES) to already be loaded and initialized — load this
 // AFTER app.js/stage.js/tool.js/report.js, and BEFORE team.js (which calls into this).
 
-const SYNC_PROJECT_KEY = "dtc-sync-project";
 const SYNC_POLL_MS = 4000;
 
 let suppressPush = false;
 let pushTimer = null;
+let pollTimer = null;
 
-/* ---------------- connection state ---------------- */
+/* ---------------- connection state ----------------
+ * The cloud link lives on the ACTIVE canvas's metadata (store.js), so a user can have several
+ * canvases — some solo, some tied to different teams — and "connected" always means "the canvas
+ * I'm currently looking at is a team canvas". */
 
 function loadSyncProject() {
-  try {
-    return JSON.parse(localStorage.getItem(SYNC_PROJECT_KEY));
-  } catch {
-    return null;
-  }
+  const meta = typeof getActiveCanvasMeta === "function" ? getActiveCanvasMeta() : null;
+  if (meta && meta.projectId) return { projectId: meta.projectId, joinCode: meta.joinCode || null };
+  return null;
 }
 
 function saveSyncProject(info) {
-  localStorage.setItem(SYNC_PROJECT_KEY, JSON.stringify(info));
+  if (typeof updateCanvasMeta !== "function" || typeof activeCanvasId !== "function") return;
+  updateCanvasMeta(activeCanvasId(), { projectId: info.projectId, joinCode: info.joinCode || null });
 }
 
 function clearSyncProject() {
-  localStorage.removeItem(SYNC_PROJECT_KEY);
+  if (typeof updateCanvasMeta !== "function" || typeof activeCanvasId !== "function") return;
+  updateCanvasMeta(activeCanvasId(), { projectId: null, joinCode: null, role: null });
 }
 
 function syncConnected() {
@@ -105,6 +108,7 @@ async function syncCreateProject(name) {
     body: JSON.stringify({ name, about }),
   });
   saveSyncCreds(created.projectId, { memberId: team.member.id, secret: team.secret, name: team.member.name, role: team.member.role });
+  if (typeof updateCanvasMeta === "function") updateCanvasMeta(activeCanvasId(), { role: team.member.role });
 
   await apiFetch(`/api/projects/${created.projectId}`, {
     method: "PATCH",
@@ -119,16 +123,20 @@ async function syncCreateProject(name) {
 
   await importLocalCardsAsEntries(created.projectId, team.member.id, team.secret);
   await pullState();
+  restartSyncPolling();
   return { projectId: created.projectId, joinCode: created.joinCode };
 }
 
-/** Join an existing cloud project by its 6-character code. Any pre-existing local cards in
- *  *this* browser are not merged automatically — the caller decides whether to offer
- *  importing them (see team.js), since they belong to whatever this browser was working on
- *  before, not necessarily to the project being joined. */
+/** Join an existing cloud project by its 6-character code. This always spins up a NEW canvas
+ *  for that team and switches to it — the canvas you were on stays exactly as it was, so being
+ *  on several teams means having several independent canvases. */
 async function syncJoinByCode(code, name) {
   const about = typeof loadLLMConfig === "function" ? (loadLLMConfig().about || "").trim() : "";
   const lookup = await apiFetch(`/api/projects?code=${encodeURIComponent(code)}`, { method: "GET" });
+
+  // Fresh canvas for this team; createCanvas() also makes it the active one.
+  const canvasId = typeof createCanvas === "function" ? createCanvas(DEFAULT_TITLE) : null;
+  if (typeof loadState === "function") state = loadState(); // reset in-memory state to the empty new canvas
   saveSyncProject({ projectId: lookup.projectId, joinCode: code.toUpperCase() });
 
   const team = await apiFetch(`/api/projects/${lookup.projectId}/team`, {
@@ -136,9 +144,46 @@ async function syncJoinByCode(code, name) {
     body: JSON.stringify({ name, about }),
   });
   saveSyncCreds(lookup.projectId, { memberId: team.member.id, secret: team.secret, name: team.member.name, role: team.member.role });
+  if (canvasId && typeof updateCanvasMeta === "function") updateCanvasMeta(canvasId, { role: team.member.role });
 
   await pullState();
-  return { projectId: lookup.projectId, member: team.member };
+  restartSyncPolling();
+  return { projectId: lookup.projectId, member: team.member, canvasId };
+}
+
+/** Leave the current team: remove yourself from the server roster, then turn this canvas into
+ *  a solo one that keeps only the entries YOU authored (per the user's chosen behavior). */
+async function syncLeaveTeam() {
+  const p = loadSyncProject();
+  if (!p) return;
+  const creds = loadSyncCreds(p.projectId);
+  const myId = creds ? creds.memberId : null;
+
+  if (creds) {
+    // Best-effort: even if the server call fails (already removed, offline), still detach locally.
+    await apiFetch(`/api/projects/${p.projectId}/team`, {
+      method: "DELETE",
+      body: JSON.stringify({ memberId: creds.memberId, secret: creds.secret }),
+    }).catch((err) => console.warn("Leave-team server call failed; detaching locally anyway:", err.message));
+  }
+
+  suppressPush = true;
+  try {
+    PHASES.forEach((ph) => {
+      state.cards[ph] = (state.cards[ph] || []).filter((c) => c.authorId && c.authorId === myId);
+    });
+    Object.keys(state.tools || {}).forEach((slug) => {
+      state.tools[slug].cards = (state.tools[slug].cards || []).filter((c) => c.authorId && c.authorId === myId);
+    });
+    state.team = null;
+    state.phaseStatus = {};
+    state.consolidations = {};
+    clearSyncProject(); // detaches the active canvas from the cloud -> solo
+    persist();
+  } finally {
+    suppressPush = false;
+  }
+  stopSyncPolling();
 }
 
 /** Upload every existing local card/tool-entry as an attributed entry — used right after
@@ -349,10 +394,24 @@ async function syncReopen(phase) {
 /* ---------------- polling ---------------- */
 
 function startSyncPolling() {
-  if (!syncConnected()) return;
-  setInterval(() => {
+  if (pollTimer || !syncConnected()) return;
+  pollTimer = setInterval(() => {
+    if (!syncConnected()) return; // active canvas switched to a solo one — idle until reconnected
     pullState().then(dispatchChanged).catch((err) => console.warn("Cloud sync pull failed:", err.message));
   }, SYNC_POLL_MS);
+}
+
+function stopSyncPolling() {
+  if (pollTimer) {
+    clearInterval(pollTimer);
+    pollTimer = null;
+  }
+}
+
+/** Restart polling against whatever the active canvas is now (used after create/join/switch). */
+function restartSyncPolling() {
+  stopSyncPolling();
+  startSyncPolling();
 }
 
 if (typeof state !== "undefined" && syncConnected()) {

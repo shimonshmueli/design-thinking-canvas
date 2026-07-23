@@ -1,9 +1,15 @@
 // Shared canvas state for all pages (dashboard, stage pages, tool worksheets).
 // Load this before app.js / stage.js / tool.js.
 
-const STORAGE_KEY = "design-thinking-canvas-v2";
+const STORAGE_KEY = "design-thinking-canvas-v2"; // legacy single-canvas key (migrated on first load)
 const LEGACY_KEY = "design-thinking-canvas-v1";
 const DEFAULT_TITLE = "Untitled Project";
+
+// Multi-canvas layout: a user can hold several independent canvases (one per team they're on,
+// plus any solo ones). An index lists them; each canvas's full state lives under its own key.
+const CANVAS_INDEX_KEY = "dtc-canvas-index";
+const ACTIVE_CANVAS_KEY = "dtc-active-canvas";
+const CANVAS_PREFIX = "dtc-canvas-";
 
 const PHASES = ["discover", "define", "ideate", "make", "evaluate", "develop", "reflect"];
 
@@ -94,6 +100,7 @@ function normalizeState(parsed) {
         .map((m) => ({
           id: String(m.id || crypto.randomUUID()),
           name: String(m.name || ""),
+          about: String(m.about || ""),
           role: m.role === "leader" ? "leader" : "member",
         })),
       settings: { approvalRule: parsed.team.settings?.approvalRule === "consensus" ? "consensus" : "leader" },
@@ -140,28 +147,183 @@ function migrateLegacyState(legacy) {
   return base;
 }
 
-function loadState() {
+/* ---------------- multi-canvas index ---------------- */
+
+function _readJSON(key, fallback) {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const v = localStorage.getItem(key);
+    return v ? JSON.parse(v) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function loadCanvasIndex() {
+  const arr = _readJSON(CANVAS_INDEX_KEY, []);
+  return Array.isArray(arr) ? arr : [];
+}
+
+function saveCanvasIndex(arr) {
+  try {
+    localStorage.setItem(CANVAS_INDEX_KEY, JSON.stringify(arr));
+  } catch {}
+}
+
+function canvasStateKey(id) {
+  return CANVAS_PREFIX + id;
+}
+
+/** One-time migration from the old single-canvas layout (STORAGE_KEY / legacy, plus the old
+ *  global `dtc-sync-project` cloud link) into the multi-canvas index. Idempotent: once an
+ *  index exists it does nothing. */
+function ensureCanvasMigrated() {
+  if (loadCanvasIndex().length > 0) return;
+
+  let seed = null;
+  try {
+    const rawV2 = localStorage.getItem(STORAGE_KEY);
+    if (rawV2) {
+      const parsed = JSON.parse(rawV2);
+      if (parsed && parsed.cards) seed = normalizeState(parsed);
+    }
+    if (!seed) {
+      const rawV1 = localStorage.getItem(LEGACY_KEY);
+      if (rawV1) {
+        const parsedV1 = JSON.parse(rawV1);
+        if (parsedV1 && parsedV1.cards) seed = migrateLegacyState(parsedV1);
+      }
+    }
+  } catch {}
+
+  const id = crypto.randomUUID();
+  const meta = { id, title: (seed && seed.title) || DEFAULT_TITLE, projectId: null, joinCode: null, role: null };
+
+  // Carry over an existing cloud link from the old single global sync-project key.
+  try {
+    const oldLink = JSON.parse(localStorage.getItem("dtc-sync-project") || "null");
+    if (oldLink && oldLink.projectId) {
+      meta.projectId = oldLink.projectId;
+      meta.joinCode = oldLink.joinCode || null;
+      const creds = JSON.parse(localStorage.getItem(`dtc-sync-creds-${oldLink.projectId}`) || "null");
+      if (creds && creds.role) meta.role = creds.role;
+    }
+  } catch {}
+
+  saveCanvasIndex([meta]);
+  try {
+    localStorage.setItem(ACTIVE_CANVAS_KEY, id);
+    if (seed) localStorage.setItem(canvasStateKey(id), JSON.stringify(seed));
+  } catch {}
+}
+
+function listCanvases() {
+  ensureCanvasMigrated();
+  return loadCanvasIndex();
+}
+
+function getCanvasMeta(id) {
+  return loadCanvasIndex().find((c) => c.id === id) || null;
+}
+
+function activeCanvasId() {
+  ensureCanvasMigrated();
+  let id = null;
+  try {
+    id = localStorage.getItem(ACTIVE_CANVAS_KEY);
+  } catch {}
+  const index = loadCanvasIndex();
+  if (id && index.some((c) => c.id === id)) return id;
+  if (index.length) {
+    try {
+      localStorage.setItem(ACTIVE_CANVAS_KEY, index[0].id);
+    } catch {}
+    return index[0].id;
+  }
+  return createCanvas(DEFAULT_TITLE); // no canvases at all — make one
+}
+
+function getActiveCanvasMeta() {
+  return getCanvasMeta(activeCanvasId());
+}
+
+function updateCanvasMeta(id, patch) {
+  const index = loadCanvasIndex();
+  const i = index.findIndex((c) => c.id === id);
+  if (i === -1) return;
+  index[i] = { ...index[i], ...patch };
+  saveCanvasIndex(index);
+}
+
+function setActiveCanvas(id) {
+  if (!loadCanvasIndex().some((c) => c.id === id)) return false;
+  try {
+    localStorage.setItem(ACTIVE_CANVAS_KEY, id);
+  } catch {}
+  return true;
+}
+
+/** Create a new solo, empty canvas and make it active. Returns its id. */
+function createCanvas(title) {
+  const id = crypto.randomUUID();
+  const index = loadCanvasIndex();
+  index.push({ id, title: title || DEFAULT_TITLE, projectId: null, joinCode: null, role: null });
+  saveCanvasIndex(index);
+  const st = emptyState();
+  st.title = title || DEFAULT_TITLE;
+  try {
+    localStorage.setItem(canvasStateKey(id), JSON.stringify(st));
+    localStorage.setItem(ACTIVE_CANVAS_KEY, id);
+  } catch {}
+  return id;
+}
+
+function deleteCanvas(id) {
+  const index = loadCanvasIndex().filter((c) => c.id !== id);
+  saveCanvasIndex(index);
+  try {
+    localStorage.removeItem(canvasStateKey(id));
+  } catch {}
+  let active = null;
+  try {
+    active = localStorage.getItem(ACTIVE_CANVAS_KEY);
+  } catch {}
+  if (active === id) {
+    if (index.length) {
+      try {
+        localStorage.setItem(ACTIVE_CANVAS_KEY, index[0].id);
+      } catch {}
+    } else {
+      createCanvas(DEFAULT_TITLE);
+    }
+  }
+}
+
+/* ---------------- load / persist (active canvas) ---------------- */
+
+function loadState() {
+  ensureCanvasMigrated();
+  const id = activeCanvasId();
+  try {
+    const raw = localStorage.getItem(canvasStateKey(id));
     if (raw) {
       const parsed = JSON.parse(raw);
       if (parsed && parsed.cards) return normalizeState(parsed);
     }
-    const legacy = localStorage.getItem(LEGACY_KEY);
-    if (legacy) {
-      const parsedLegacy = JSON.parse(legacy);
-      if (parsedLegacy && parsedLegacy.cards) return migrateLegacyState(parsedLegacy);
-    }
   } catch (err) {
     console.warn("Could not read saved canvas, starting fresh.", err);
   }
-  return emptyState();
+  const empty = emptyState();
+  const meta = getCanvasMeta(id);
+  if (meta && meta.title) empty.title = meta.title;
+  return empty;
 }
 
-/** Persist. Returns true on success. */
+/** Persist the active canvas. Returns true on success. */
 function persistState(state) {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    const id = activeCanvasId();
+    localStorage.setItem(canvasStateKey(id), JSON.stringify(state));
+    updateCanvasMeta(id, { title: state.title || DEFAULT_TITLE });
     // Every save funnels through here, so this is the one place sync.js needs to hook to
     // push scalar-field edits (title, brief, etc.) up to a connected cloud project. No-ops
     // when sync.js isn't loaded or no project is connected — solo/local-only is unaffected.

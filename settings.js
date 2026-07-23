@@ -1,8 +1,12 @@
-// Global user settings: name, LLM provider, model, API key.
-// Requires llm.js (loadLLMConfig / saveLLMConfig / LLM_PROVIDERS).
-// Include on every page; wires any element with id="open-settings" or class="open-settings".
+// Unified Settings modal: two tabs — "Identity & AI" (your name, about, LLM provider/model/key)
+// and "Teams & Canvases" (switch canvases, create/join/leave teams, Export/Import). The team
+// tab's contents are rendered by team.js via window.renderTeamSection.
+// Requires llm.js, store.js; team.js (optional — the Teams tab is hidden if it isn't loaded).
+// Include on every page that has team/canvas features; wires id="open-settings"/.open-settings.
 
 (function () {
+  const hasTeams = () => typeof window.renderTeamSection === "function";
+
   function buildModal() {
     if (document.getElementById("settings-modal")) return;
 
@@ -17,39 +21,62 @@
           <button type="button" class="btn btn-ghost" id="settings-close" aria-label="${t("settings.close")}">✕</button>
         </div>
 
-        <label class="settings-field">${t("settings.name.label")}
-          <input id="set-name" type="text" placeholder="e.g. Dana" autocomplete="name">
-        </label>
-
-        <label class="settings-field">${t("settings.about.label")} <span class="settings-opt">${t("settings.about.hint")}</span>
-          <textarea id="set-about" rows="3" placeholder="${t("settings.about.placeholder")}"></textarea>
-        </label>
-
-        <h3 class="settings-subhead">${t("settings.ai.heading")}</h3>
-
-        <label class="settings-field">${t("settings.provider.label")}
-          <select id="set-provider">
-            ${Object.entries(LLM_PROVIDERS)
-              .map(([id, p]) => `<option value="${id}">${p.label}</option>`)
-              .join("")}
-          </select>
-        </label>
-
-        <label class="settings-field">${t("settings.model.label")} <span class="settings-opt">${t("settings.model.hint")}</span>
-          <input id="set-model" type="text" list="set-model-list" autocomplete="off">
-          <datalist id="set-model-list"></datalist>
-        </label>
-
-        <label class="settings-field">${t("settings.key.label")}
-          <input id="set-key" type="password" autocomplete="off">
-        </label>
-
-        <p class="llm-note">${t("settings.note")}</p>
-
-        <div class="settings-actions">
-          <button type="button" class="btn btn-add" id="settings-save">${t("settings.save")}</button>
-          <span class="assist-status" id="settings-status"></span>
+        <div class="settings-tabs" role="tablist">
+          <button type="button" class="settings-tab is-active" data-tab="identity">${t("settings.tab.identity")}</button>
+          ${hasTeams() ? `<button type="button" class="settings-tab" data-tab="teams">${t("settings.tab.teams")}</button>` : ""}
         </div>
+
+        <div class="settings-tabpane" data-pane="identity">
+          <label class="settings-field">${t("settings.name.label")}
+            <input id="set-name" type="text" placeholder="e.g. Dana" autocomplete="name">
+          </label>
+
+          <label class="settings-field">${t("settings.about.label")} <span class="settings-opt">${t("settings.about.hint")}</span>
+            <textarea id="set-about" rows="3" placeholder="${t("settings.about.placeholder")}"></textarea>
+          </label>
+
+          <h3 class="settings-subhead">${t("settings.ai.heading")}</h3>
+
+          <label class="settings-field">${t("settings.provider.label")}
+            <select id="set-provider">
+              ${Object.entries(LLM_PROVIDERS)
+                .map(([id, p]) => `<option value="${id}">${p.label}</option>`)
+                .join("")}
+            </select>
+          </label>
+
+          <label class="settings-field">${t("settings.model.label")} <span class="settings-opt">${t("settings.model.hint")}</span>
+            <input id="set-model" type="text" list="set-model-list" autocomplete="off">
+            <datalist id="set-model-list"></datalist>
+          </label>
+
+          <label class="settings-field">${t("settings.key.label")}
+            <input id="set-key" type="password" autocomplete="off">
+          </label>
+
+          <p class="llm-note">${t("settings.note")}</p>
+
+          <div class="settings-actions">
+            <button type="button" class="btn btn-add" id="settings-save">${t("settings.save")}</button>
+            <span class="assist-status" id="settings-status"></span>
+          </div>
+        </div>
+
+        ${
+          hasTeams()
+            ? `<div class="settings-tabpane" data-pane="teams" hidden>
+                 <div id="team-section"></div>
+                 <h3 class="settings-subhead">${t("settings.data.heading")}</h3>
+                 <div class="settings-actions">
+                   <button type="button" class="btn" id="export-json">${t("header.export")}</button>
+                   <button type="button" class="btn" id="import-json">${t("header.import")}</button>
+                   <input id="import-file" type="file" accept="application/json" hidden>
+                   <span class="assist-status" id="data-status"></span>
+                 </div>
+                 <p class="settings-opt">${t("settings.data.note")}</p>
+               </div>`
+            : ""
+        }
       </div>
     `;
     document.body.appendChild(overlay);
@@ -73,6 +100,10 @@
       if (e.key === "Escape" && !overlay.hidden) closeSettings();
     });
 
+    overlay.querySelectorAll(".settings-tab").forEach((tab) =>
+      tab.addEventListener("click", () => selectTab(tab.dataset.tab))
+    );
+
     overlay.querySelector("#settings-save").addEventListener("click", () => {
       const cfg = loadLLMConfig();
       cfg.name = overlay.querySelector("#set-name").value.trim();
@@ -84,8 +115,23 @@
       overlay.querySelector("#settings-status").textContent = t("settings.saved");
       updateButtons();
       document.dispatchEvent(new CustomEvent("dtc-settings-changed"));
-      setTimeout(closeSettings, 500);
     });
+
+    overlay.querySelector("#export-json")?.addEventListener("click", exportCurrentCanvas);
+    const importInput = overlay.querySelector("#import-file");
+    overlay.querySelector("#import-json")?.addEventListener("click", () => importInput.click());
+    importInput?.addEventListener("change", importCanvasFile);
+  }
+
+  function selectTab(name) {
+    const overlay = document.getElementById("settings-modal");
+    if (!overlay) return;
+    overlay.querySelectorAll(".settings-tab").forEach((t) => t.classList.toggle("is-active", t.dataset.tab === name));
+    overlay.querySelectorAll(".settings-tabpane").forEach((p) => (p.hidden = p.dataset.pane !== name));
+    if (name === "teams" && hasTeams()) {
+      const host = overlay.querySelector("#team-section");
+      window.renderTeamSection(host);
+    }
   }
 
   /** Populate the model datalist: static list per provider; full live catalog for OpenRouter. */
@@ -99,7 +145,7 @@
     if (providerId === "openrouter") {
       llmOpenRouterModels()
         .then(setOptions)
-        .catch(() => { /* offline — keep the short static list */ });
+        .catch(() => {});
     }
   }
 
@@ -121,9 +167,67 @@
     fillModelList(providerSel.value);
   }
 
-  window.openSettings = function () {
+  /* ---------------- Export / Import (active canvas) ---------------- */
+
+  function exportCurrentCanvas() {
+    const st = loadState();
+    const cfg = loadLLMConfig();
+    const payload = {
+      _format: "design-thinking-canvas-export-v1",
+      schemaVersion: 2,
+      exported: new Date().toISOString(),
+      ...st,
+      settings: { name: cfg.name || "", about: cfg.about || "", provider: cfg.provider || "", model: cfg.model || "" },
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    const safe = (st.title || "canvas").trim().replace(/[^a-z0-9\-_ ]/gi, "").replace(/\s+/g, "-") || "canvas";
+    a.href = url;
+    a.download = `${safe}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  /** Import always lands in a NEW canvas so it never clobbers what you're working on. */
+  function importCanvasFile(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const status = document.getElementById("data-status");
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const parsed = JSON.parse(reader.result);
+        if (typeof parsed.schemaVersion === "number" && parsed.schemaVersion > 2 && !confirm(t("confirm.importNewer"))) {
+          e.target.value = "";
+          return;
+        }
+        const st = normalizeState(parsed);
+        const id = createCanvas(st.title);
+        localStorage.setItem(canvasStateKey(id), JSON.stringify(st));
+        setActiveCanvas(id);
+        if (parsed.settings && typeof parsed.settings === "object") {
+          const cfg = loadLLMConfig();
+          ["name", "about", "provider", "model"].forEach((k) => {
+            if (typeof parsed.settings[k] === "string") cfg[k] = parsed.settings[k];
+          });
+          saveLLMConfig(cfg);
+        }
+        try {
+          location.reload();
+        } catch {}
+      } catch {
+        if (status) status.textContent = t("alert.importInvalid");
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = "";
+  }
+
+  window.openSettings = function (tab) {
     buildModal();
     fillModal();
+    selectTab(tab === "teams" && hasTeams() ? "teams" : "identity");
     document.getElementById("settings-modal").hidden = false;
   };
 
@@ -142,10 +246,11 @@
     settingsButtons().forEach((b) => (b.textContent = label));
   }
 
-  settingsButtons().forEach((b) => b.addEventListener("click", window.openSettings));
+  settingsButtons().forEach((b) => b.addEventListener("click", () => window.openSettings()));
   updateButtons();
   window.updateSettingsButtons = updateButtons;
+  document.addEventListener("dtc-team-changed", updateButtons);
 
-  // Deep link: stage pages link to index.html#settings when no key is configured.
+  // Deep link: other pages link to index.html#settings when no key is configured.
   if (location.hash === "#settings") window.openSettings();
 })();
