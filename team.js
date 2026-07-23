@@ -56,7 +56,7 @@
       .join("");
 
     return `
-      <h3 class="settings-subhead">${t("team.canvasesHeading")}</h3>
+      <h3 class="settings-group-title">${t("team.canvasesHeading")}</h3>
       <ul class="canvas-list">${rows}</ul>
       <div class="settings-actions">
         <button type="button" class="btn" id="canvas-new">${t("team.newCanvas")}</button>
@@ -70,7 +70,7 @@
 
     if (!name) {
       return `
-        <h3 class="settings-subhead">${t("team.title")}</h3>
+        <h3 class="settings-group-title">${t("team.title")}</h3>
         <div class="team-settings-required">
           <p>${t("team.settingsRequired")}</p>
           <button type="button" class="btn btn-add" id="team-open-settings">${t("team.openSettings")}</button>
@@ -84,7 +84,7 @@
       </p>`;
 
     return `
-      <h3 class="settings-subhead">${t("team.title")}</h3>
+      <h3 class="settings-group-title">${t("team.title")}</h3>
       <p class="workspace-hint">${t("team.soloHint")}</p>
       ${identityLine}
 
@@ -125,7 +125,7 @@
       .join("");
 
     return `
-      <h3 class="settings-subhead">${t("team.title")}</h3>
+      <h3 class="settings-group-title">${t("team.title")}</h3>
       <p class="workspace-hint">${t("team.youAre")} <strong>${me ? escapeHtml(me.name) : "?"}</strong> (${me && me.role === "leader" ? t("team.roleLeader") : t("team.roleMember")})</p>
 
       <div class="team-join-code-box">
@@ -160,7 +160,9 @@
   function renderInto(container) {
     if (!container) return;
     const connected = typeof syncConnected === "function" && syncConnected();
-    container.innerHTML = canvasListHTML() + (connected ? renderTeamPanel() : renderSoloPanel());
+    container.innerHTML =
+      `<div class="settings-group">${canvasListHTML()}</div>` +
+      `<div class="settings-group">${connected ? renderTeamPanel() : renderSoloPanel()}</div>`;
     wireHandlers(container);
   }
 

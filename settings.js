@@ -27,34 +27,39 @@
         </div>
 
         <div class="settings-tabpane" data-pane="identity">
-          <label class="settings-field">${t("settings.name.label")}
-            <input id="set-name" type="text" placeholder="e.g. Dana" autocomplete="name">
-          </label>
+          <div class="settings-group">
+            <h3 class="settings-group-title">${t("settings.group.you")}</h3>
+            <label class="settings-field">${t("settings.name.label")}
+              <input id="set-name" type="text" placeholder="e.g. Dana" autocomplete="name">
+            </label>
 
-          <label class="settings-field">${t("settings.about.label")} <span class="settings-opt">${t("settings.about.hint")}</span>
-            <textarea id="set-about" rows="3" placeholder="${t("settings.about.placeholder")}"></textarea>
-          </label>
+            <label class="settings-field">${t("settings.about.label")} <span class="settings-opt">${t("settings.about.hint")}</span>
+              <textarea id="set-about" rows="3" placeholder="${t("settings.about.placeholder")}"></textarea>
+            </label>
+          </div>
 
-          <h3 class="settings-subhead">${t("settings.ai.heading")}</h3>
+          <div class="settings-group">
+            <h3 class="settings-group-title">${t("settings.ai.heading")}</h3>
 
-          <label class="settings-field">${t("settings.provider.label")}
-            <select id="set-provider">
-              ${Object.entries(LLM_PROVIDERS)
-                .map(([id, p]) => `<option value="${id}">${p.label}</option>`)
-                .join("")}
-            </select>
-          </label>
+            <label class="settings-field">${t("settings.provider.label")}
+              <select id="set-provider">
+                ${Object.entries(LLM_PROVIDERS)
+                  .map(([id, p]) => `<option value="${id}">${p.label}</option>`)
+                  .join("")}
+              </select>
+            </label>
 
-          <label class="settings-field">${t("settings.model.label")} <span class="settings-opt">${t("settings.model.hint")}</span>
-            <input id="set-model" type="text" list="set-model-list" autocomplete="off">
-            <datalist id="set-model-list"></datalist>
-          </label>
+            <label class="settings-field">${t("settings.model.label")} <span class="settings-opt">${t("settings.model.hint")}</span>
+              <input id="set-model" type="text" list="set-model-list" autocomplete="off">
+              <datalist id="set-model-list"></datalist>
+            </label>
 
-          <label class="settings-field">${t("settings.key.label")}
-            <input id="set-key" type="password" autocomplete="off">
-          </label>
+            <label class="settings-field">${t("settings.key.label")}
+              <input id="set-key" type="password" autocomplete="off">
+            </label>
 
-          <p class="llm-note">${t("settings.note")}</p>
+            <p class="llm-note">${t("settings.note")}</p>
+          </div>
 
           <div class="settings-actions">
             <button type="button" class="btn btn-add" id="settings-save">${t("settings.save")}</button>
@@ -66,14 +71,16 @@
           hasTeams()
             ? `<div class="settings-tabpane" data-pane="teams" hidden>
                  <div id="team-section"></div>
-                 <h3 class="settings-subhead">${t("settings.data.heading")}</h3>
-                 <div class="settings-actions">
-                   <button type="button" class="btn" id="export-json">${t("header.export")}</button>
-                   <button type="button" class="btn" id="import-json">${t("header.import")}</button>
-                   <input id="import-file" type="file" accept="application/json" hidden>
-                   <span class="assist-status" id="data-status"></span>
+                 <div class="settings-group">
+                   <h3 class="settings-group-title">${t("settings.data.heading")}</h3>
+                   <div class="settings-actions">
+                     <button type="button" class="btn" id="export-json">${t("header.export")}</button>
+                     <button type="button" class="btn" id="import-json">${t("header.import")}</button>
+                     <input id="import-file" type="file" accept="application/json" hidden>
+                     <span class="assist-status" id="data-status"></span>
+                   </div>
+                   <p class="settings-opt">${t("settings.data.note")}</p>
                  </div>
-                 <p class="settings-opt">${t("settings.data.note")}</p>
                </div>`
             : ""
         }

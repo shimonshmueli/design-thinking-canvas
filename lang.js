@@ -473,6 +473,7 @@ const I18N = {
   // Settings modal
   "settings.title": { en: "Settings", zh: "设置" },
   "settings.tab.identity": { en: "Identity & AI", zh: "身份与 AI" },
+  "settings.group.you": { en: "About you", zh: "关于你" },
   "settings.tab.teams": { en: "Teams & Canvases", zh: "团队与画布" },
   "settings.data.heading": { en: "Export / Import", zh: "导出 / 导入" },
   "settings.data.note": { en: "Export saves this canvas as a .json file. Import loads one into a new canvas (it never overwrites your current work).", zh: "导出会把此画布保存为 .json 文件。导入会将文件载入为一个新画布（绝不会覆盖你当前的工作）。" },
