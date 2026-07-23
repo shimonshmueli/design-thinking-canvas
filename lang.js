@@ -88,6 +88,7 @@ function mountLangSwitch() {
 const I18N = {
   // Header / nav
   "nav.canvas": { en: "◉ Home", zh: "◉ 主页" },
+  "nav.guide": { en: "❔ Guide", zh: "❔ 指南" },
   "nav.report": { en: "▤ Report", zh: "▤ 报告" },
   "nav.stage.discover": { en: "Discover", zh: "探索" },
   "nav.stage.define": { en: "Define", zh: "定义" },

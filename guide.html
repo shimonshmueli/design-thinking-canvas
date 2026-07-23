@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Guide — Design Thinking Canvas</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="doc-body">
+<header class="app-header doc-header">
+  <nav class="breadcrumb"><a href="index.html" data-i18n="crumb.canvas">Home</a> <span>›</span> <strong><span class="lang-en">User Guide</span><span class="lang-zh">使用指南</span></strong></nav>
+  <div class="doc-nav-row">
+    <nav class="process-nav" aria-label="Process stages">
+      <a class="pn-home" href="index.html" data-i18n="nav.canvas">◉ Home</a>
+      <a class="pn-step pn-discover" href="stages/discover.html"><span class="pn-num">1</span><span data-i18n="nav.stage.discover">Discover</span></a>
+      <a class="pn-step pn-define" href="stages/define.html"><span class="pn-num">2</span><span data-i18n="nav.stage.define">Define</span></a>
+      <a class="pn-step pn-ideate" href="stages/ideate.html"><span class="pn-num">3</span><span data-i18n="nav.stage.ideate">Ideate</span></a>
+      <a class="pn-step pn-make" href="stages/make.html"><span class="pn-num">4</span><span data-i18n="nav.stage.make">Make</span></a>
+      <a class="pn-step pn-evaluate" href="stages/evaluate.html"><span class="pn-num">5</span><span data-i18n="nav.stage.evaluate">Evaluate</span></a>
+      <a class="pn-step pn-develop" href="stages/develop.html"><span class="pn-num">6</span><span data-i18n="nav.stage.develop">Develop</span></a>
+      <a class="pn-step pn-reflect" href="stages/reflect.html"><span class="pn-num">7</span><span data-i18n="nav.stage.reflect">Reflect</span></a>
+      <a class="pn-step pn-report" href="report.html" data-i18n="nav.report">▤ Report</a>
+    </nav>
+    <div class="doc-nav-side">
+      <span class="lang-switch-mount"></span>
+      <a href="guide.html" class="btn btn-ghost pn-active" data-i18n="nav.guide" title="User guide">❔ Guide</a>
+      <button id="open-settings" class="btn btn-ghost" data-i18n="header.settings" data-i18n-title="header.settings" title="Your identity, teams &amp; canvases, AI provider">⚙ Settings</button>
+    </div>
+  </div>
+</header>
+
+<main class="doc">
+<article class="doc-article guide" data-phase="discover">
+  <span class="phase-tag"><span class="lang-en">Getting started</span><span class="lang-zh">入门</span></span>
+  <h1><span class="lang-en">User Guide</span><span class="lang-zh">使用指南</span></h1>
+  <p class="guide-lede">
+    <span class="lang-en">This canvas walks a team — or a solo student — through the <strong>Double Diamond</strong> design process, from a broad challenge to a tested solution concept and a final report. You supply the thinking; the optional AI helps you sharpen and organize it. This guide is a friendly tour of everything the app can do.</span>
+    <span class="lang-zh">这个画布带领团队——或独自学习的学生——完成<strong>双钻石（Double Diamond）</strong>设计流程：从一个宽泛的挑战，走向经过验证的解决方案概念，最终形成一份报告。思考由你完成；可选的 AI 帮助你打磨与梳理。本指南将友好地带你了解应用的全部功能。</span>
+  </p>
+
+  <div class="guide-callout">
+    <span class="lang-en">👋 Throughout this guide you'll follow <strong>Team Nightingale</strong> — Ana, Ben, and Carla — a student team working on <em>“Medication safety for home caregivers.”</em> Their side notes show how each feature works in practice.</span>
+    <span class="lang-zh">👋 在本指南中，你会跟随<strong>南丁格尔小组</strong>——Ana、Ben 和 Carla——一个正在研究<em>「居家照护者的用药安全」</em>的学生团队。他们的旁注展示了每个功能的实际用法。</span>
+  </div>
+
+  <nav class="guide-toc" aria-label="Contents">
+    <strong><span class="lang-en">Contents</span><span class="lang-zh">目录</span></strong>
+    <ol>
+      <li><a href="#s-diamond"><span class="lang-en">The Double Diamond</span><span class="lang-zh">双钻石模型</span></a></li>
+      <li><a href="#s-start"><span class="lang-en">Start: name your project</span><span class="lang-zh">开始：命名你的项目</span></a></li>
+      <li><a href="#s-dashboard"><span class="lang-en">The home dashboard</span><span class="lang-zh">主页仪表板</span></a></li>
+      <li><a href="#s-stage"><span class="lang-en">Working a stage</span><span class="lang-zh">进行某个阶段</span></a></li>
+      <li><a href="#s-tools"><span class="lang-en">Tools &amp; worksheets</span><span class="lang-zh">工具与工作表</span></a></li>
+      <li><a href="#s-brief"><span class="lang-en">The Problem Definition (brief)</span><span class="lang-zh">问题定义（brief）</span></a></li>
+      <li><a href="#s-ai"><span class="lang-en">The AI assistant (optional)</span><span class="lang-zh">AI 助手（可选）</span></a></li>
+      <li><a href="#s-report"><span class="lang-en">Generating a report</span><span class="lang-zh">生成报告</span></a></li>
+      <li><a href="#s-teams"><span class="lang-en">Teams: work together</span><span class="lang-zh">团队：协同工作</span></a></li>
+      <li><a href="#s-consolidate"><span class="lang-en">Readiness &amp; consolidation</span><span class="lang-zh">就绪与合并</span></a></li>
+      <li><a href="#s-canvases"><span class="lang-en">Multiple canvases &amp; leaving</span><span class="lang-zh">多个画布与退出团队</span></a></li>
+      <li><a href="#s-data"><span class="lang-en">Export, import &amp; saving</span><span class="lang-zh">导出、导入与保存</span></a></li>
+      <li><a href="#s-tips"><span class="lang-en">Tips &amp; FAQ</span><span class="lang-zh">技巧与常见问题</span></a></li>
+    </ol>
+  </nav>
+
+  <!-- 1 -->
+  <section class="guide-section" id="s-diamond">
+    <h2><span class="lang-en">1 · The Double Diamond</span><span class="lang-zh">1 · 双钻石模型</span></h2>
+    <p>
+      <span class="lang-en">The process has two “diamonds.” In the <strong>problem space</strong> you first go wide (<em>Discover</em>) then narrow (<em>Define</em>) to a clear Problem Definition. In the <strong>solution space</strong> you go wide again (<em>Ideate</em>) then narrow (<em>Make</em>) to a Solution Concept — which you then Evaluate, run through the Develop gate, and Reflect on.</span>
+      <span class="lang-zh">流程包含两个「钻石」。在<strong>问题空间</strong>中，你先发散（<em>探索</em>）再收敛（<em>定义</em>），得到清晰的问题定义。在<strong>解决方案空间</strong>中，你再次发散（<em>构思</em>）再收敛（<em>制作</em>），得到解决方案概念——随后进行评估、通过「发展」关卡，并进行反思。</span>
+    </p>
+    <svg class="diamond-guide" viewBox="0 0 1000 150" preserveAspectRatio="none" aria-hidden="true">
+      <polygon points="0,75 250,15 500,75 250,135" class="diamond-shape diamond-1"></polygon>
+      <polygon points="500,75 750,15 1000,75 750,135" class="diamond-shape diamond-2"></polygon>
+      <line x1="500" y1="15" x2="500" y2="135" class="diamond-divider"></line>
+      <text x="125" y="78" class="diamond-text">Discover</text>
+      <text x="375" y="78" class="diamond-text">Define</text>
+      <text x="625" y="78" class="diamond-text">Ideate</text>
+      <text x="875" y="78" class="diamond-text">Make</text>
+    </svg>
+    <p>
+      <span class="lang-en">Each of the seven stages has its own page with a workspace. The strip at the top of every page lets you jump between them, and ⓘ links open a glossary whenever a term needs explaining.</span>
+      <span class="lang-zh">七个阶段各有自己的页面与工作区。每页顶部的导航条可在阶段之间跳转；遇到需要解释的术语时，点击 ⓘ 链接即可打开词汇表。</span>
+    </p>
+  </section>
+
+  <!-- 2 -->
+  <section class="guide-section" id="s-start">
+    <h2><span class="lang-en">2 · Start: name your project</span><span class="lang-zh">2 · 开始：命名你的项目</span></h2>
+    <p>
+      <span class="lang-en">The first time you open the app it asks for a real project title. Every page and every AI prompt refers back to it, so give it a specific name (you can rename it later using the ✎ Edit button next to the title).</span>
+      <span class="lang-zh">首次打开应用时，它会要求你输入一个真实的项目名称。每个页面和每条 AI 提示都会引用它，因此请起一个具体的名字（之后可用标题旁的 ✎ 编辑按钮重命名）。</span>
+    </p>
+    <div class="guide-persona">
+      <h4><span class="lang-en">Team Nightingale</span><span class="lang-zh">南丁格尔小组</span></h4>
+      <span class="lang-en">Ana names the project “Medication safety for home caregivers.” In a team, only the leader can rename a project; on a solo canvas you own it and can rename it freely.</span>
+      <span class="lang-zh">Ana 将项目命名为「居家照护者的用药安全」。在团队中，只有组长能重命名项目；在个人画布上，你拥有它，可以自由重命名。</span>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section class="guide-section" id="s-dashboard">
+    <h2><span class="lang-en">3 · The home dashboard</span><span class="lang-zh">3 · 主页仪表板</span></h2>
+    <p><span class="lang-en">Home is where you frame the work. From top to bottom:</span><span class="lang-zh">主页是你为工作搭建框架的地方，从上到下依次是：</span></p>
+    <ul class="guide-steps">
+      <li><span class="lang-en"><strong>Challenge</strong> — the broad territory you're taking on. You must write it yourself; the AI can only rephrase it for clarity, never invent it.</span><span class="lang-zh"><strong>挑战</strong>——你要投入的宽泛领域。必须由你亲自撰写；AI 只能帮你改写以更清晰，绝不会替你构思。</span></li>
+      <li><span class="lang-en"><strong>Challenge selection worksheet</strong> — a fit assessment (values, objectives, role, SWOT) that ends in a decision: accept, scope down, or reject. It's collapsible so the page stays light once you've filled it in.</span><span class="lang-zh"><strong>挑战选择工作表</strong>——一次契合度评估（价值观、目标、角色、SWOT），最终形成决定：接受、缩小范围或拒绝。它可折叠，填写后页面会更简洁。</span></li>
+      <li><span class="lang-en"><strong>Foundations</strong> — the theme/category and the thinking modes (divergent vs. convergent) that frame the process.</span><span class="lang-zh"><strong>基础</strong>——主题/品类，以及构成流程框架的思维模式（发散与收敛）。</span></li>
+      <li><span class="lang-en"><strong>Stage summary board</strong> — read-only previews of each stage. The real work happens on the stage pages; click a column to open its workspace.</span><span class="lang-zh"><strong>阶段总览面板</strong>——各阶段的只读预览。实际工作在阶段页面进行；点击某一列即可打开其工作区。</span></li>
+    </ul>
+    <p><span class="lang-en">A dismissible welcome card at the very top recaps these three steps the first time you visit.</span><span class="lang-zh">首次访问时，页面最上方会有一张可关闭的欢迎卡片，概括这三个步骤。</span></p>
+  </section>
+
+  <!-- 4 -->
+  <section class="guide-section" id="s-stage">
+    <h2><span class="lang-en">4 · Working a stage</span><span class="lang-zh">4 · 进行某个阶段</span></h2>
+    <p><span class="lang-en">Open any stage (e.g. Discover) and scroll to — or click <span class="guide-key">↓ Jump to workspace</span> for — the <strong>Workspace</strong>. Type a note and press <span class="guide-key">+ Add card</span>. Cards are saved automatically in your browser.</span><span class="lang-zh">打开任意阶段（如「探索」），滚动到——或点击 <span class="guide-key">↓ 跳到工作区</span>——<strong>工作区</strong>。输入一条笔记并点击 <span class="guide-key">+ 添加卡片</span>。卡片会自动保存在你的浏览器中。</span></p>
+    <ul class="guide-steps">
+      <li><span class="lang-en">Click a card's text to edit it. Clearing it won't delete it — removing a card is only ever done with its ✕ button.</span><span class="lang-zh">点击卡片文字即可编辑。清空文字并不会删除它——删除卡片只能通过其 ✕ 按钮完成。</span></li>
+      <li><span class="lang-en">In a team, each card shows its author's name; hover the name to see that teammate's “about yourself” note.</span><span class="lang-zh">在团队中，每张卡片都会显示作者姓名；将鼠标悬停在姓名上，可查看该队友的「关于你自己」说明。</span></li>
+    </ul>
+  </section>
+
+  <!-- 5 -->
+  <section class="guide-section" id="s-tools">
+    <h2><span class="lang-en">5 · Tools &amp; worksheets</span><span class="lang-zh">5 · 工具与工作表</span></h2>
+    <p><span class="lang-en">Each stage lists relevant tools and methods (personas, competitive analysis, prototyping, and so on). Open a tool to read how it works and to keep a <strong>worksheet</strong> of findings. Any worksheet entry can be sent up into the stage as a card with <span class="guide-key">Send to stage</span>, and worksheet notes also feed the AI's context on that stage.</span><span class="lang-zh">每个阶段都会列出相关的工具与方法（人物画像、竞争分析、原型制作等）。打开某个工具，可阅读其用法并保存一份发现的<strong>工作表</strong>。任何工作表条目都可通过 <span class="guide-key">发送到阶段</span> 作为卡片送入该阶段；工作表中的笔记也会纳入该阶段 AI 的上下文。</span></p>
+    <div class="guide-persona">
+      <h4><span class="lang-en">Team Nightingale</span><span class="lang-zh">南丁格尔小组</span></h4>
+      <span class="lang-en">Ben fills the Competitive Analysis worksheet with pill-organizer apps, then promotes the two sharpest findings into Discover cards for the whole team to build on.</span>
+      <span class="lang-zh">Ben 在「竞争分析」工作表中记录各种药盒管理 App，然后把两条最尖锐的发现提升为「探索」阶段的卡片，供全队在此基础上继续深入。</span>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section class="guide-section" id="s-brief">
+    <h2><span class="lang-en">6 · The Problem Definition (brief)</span><span class="lang-zh">6 · 问题定义（brief）</span></h2>
+    <p><span class="lang-en">On the <strong>Define</strong> page you write the brief: the problem statement, users &amp; stakeholders, needs, a point-of-view, a How-Might-We, objectives, and success criteria. This brief is the hinge of the whole project — the second diamond (Ideate onward) gently nudges you to fill it in before its AI helpers unlock, so solutions stay anchored to a real problem.</span><span class="lang-zh">在<strong>定义</strong>页面，你撰写 brief：问题陈述、用户与利益相关者、需求、观点（POV）、「我们如何能…（HMW）」、目标以及成功标准。这份 brief 是整个项目的枢纽——第二个钻石（从「构思」开始）会温和地提示你先填写它，其 AI 助手才会解锁，从而让方案始终锚定在真实问题上。</span></p>
+  </section>
+
+  <!-- 7 -->
+  <section class="guide-section" id="s-ai">
+    <h2><span class="lang-en">7 · The AI assistant (optional)</span><span class="lang-zh">7 · AI 助手（可选）</span></h2>
+    <p><span class="lang-en">The ✦ buttons are optional and bring-your-own-key. Open <strong>Settings → Identity &amp; AI</strong>, choose a provider, and paste your own API key. The key is stored only in your browser and is never included in exports. Without a key the app works fully — you just do the writing yourself.</span><span class="lang-zh">✦ 按钮为可选功能，采用「自带密钥」方式。打开<strong>设置 → 身份与 AI</strong>，选择一个服务商，并粘贴你自己的 API 密钥。密钥仅保存在你的浏览器中，导出时绝不包含它。没有密钥时应用也能完整使用——只是需要你自己完成撰写。</span></p>
+    <p><span class="lang-en">The AI is deliberately a <em>helper</em>, not a decider: it can suggest cards, rephrase your challenge, or ask facilitator questions, but it never invents your challenge and never finalizes team decisions on its own.</span><span class="lang-zh">AI 被刻意设计为<em>助手</em>而非决策者：它可以建议卡片、改写你的挑战，或提出引导性问题，但绝不会替你构思挑战，也绝不会自行敲定团队的决定。</span></p>
+    <div class="guide-persona">
+      <h4><span class="lang-en">Tip</span><span class="lang-zh">提示</span></h4>
+      <span class="lang-en">Fill in “About yourself” in Settings (e.g. “design student, new to strategy”). The AI uses it to pitch its suggestions at the right level for you.</span>
+      <span class="lang-zh">在设置中填写「关于你自己」（例如「设计专业学生，刚接触战略」）。AI 会据此把建议调整到适合你的层次。</span>
+    </div>
+  </section>
+
+  <!-- 8 -->
+  <section class="guide-section" id="s-report">
+    <h2><span class="lang-en">8 · Generating a report</span><span class="lang-zh">8 · 生成报告</span></h2>
+    <p><span class="lang-en">The <strong>Report</strong> page compiles everything — challenge, brief, every stage's cards, and every worksheet — into one Markdown document with Mermaid charts. With an AI key it writes a polished narrative around <em>your</em> content (and flags gaps rather than filling them); without a key you get a clean data-only report. Download the <span class="guide-key">.md</span> file or copy it out.</span><span class="lang-zh"><strong>报告</strong>页面会把所有内容——挑战、brief、各阶段卡片、各工作表——汇编成一份带 Mermaid 图表的 Markdown 文档。配置了 AI 密钥时，它会围绕<em>你的</em>内容撰写一段流畅的叙述（并标注缺口而非替你填补）；没有密钥时，你会得到一份干净的纯数据报告。可下载 <span class="guide-key">.md</span> 文件或复制导出。</span></p>
+  </section>
+
+  <!-- 9 -->
+  <section class="guide-section" id="s-teams">
+    <h2><span class="lang-en">9 · Teams: work together</span><span class="lang-zh">9 · 团队：协同工作</span></h2>
+    <p><span class="lang-en">Everything above works solo. To collaborate across devices, open <strong>Settings → Teams &amp; Canvases</strong> (first set your name in the Identity tab — it becomes your team identity).</span><span class="lang-zh">以上功能都可单人使用。若要跨设备协作，请打开<strong>设置 → 团队与画布</strong>（请先在「身份」标签中填写姓名——它将成为你在团队中的身份）。</span></p>
+    <ul class="guide-steps">
+      <li><span class="lang-en"><strong>Start a team</strong> turns your current canvas into a shared project and gives you a 6-character join code. Use <span class="guide-key">Copy</span> to share it.</span><span class="lang-zh"><strong>创建团队</strong>会把你当前的画布变成一个共享项目，并给你一个 6 位加入代码。用 <span class="guide-key">复制</span> 分享它。</span></li>
+      <li><span class="lang-en"><strong>Join a team</strong> with a code connects you to that project. Everyone's cards sync within a few seconds.</span><span class="lang-zh">用代码<strong>加入团队</strong>，即可连接到该项目。所有人的卡片会在几秒内同步。</span></li>
+      <li><span class="lang-en">Each contribution stays attributed to its author. You can edit or delete your own cards; the team leader can delete anyone's. Nobody silently overwrites anyone else's work.</span><span class="lang-zh">每份贡献都会保留其作者署名。你可以编辑或删除自己的卡片；组长可以删除任何人的卡片。任何人都不会悄悄覆盖他人的工作。</span></li>
+      <li><span class="lang-en">The leader chooses the <strong>approval rule</strong>: <em>leader</em> (the leader decides) or <em>consensus</em> (everyone must agree).</span><span class="lang-zh">组长选择<strong>审批规则</strong>：<em>组长</em>（由组长决定）或<em>共识</em>（所有人须一致同意）。</span></li>
+    </ul>
+    <div class="guide-persona">
+      <h4><span class="lang-en">Team Nightingale</span><span class="lang-zh">南丁格尔小组</span></h4>
+      <span class="lang-en">Ana starts the team and sends Ben and Carla the code. They each join from their own laptops and start adding interview notes to Discover — everyone sees the others' cards appear live.</span>
+      <span class="lang-zh">Ana 创建团队，并把代码发给 Ben 和 Carla。他们各自用自己的笔记本电脑加入，并开始向「探索」阶段添加访谈笔记——每个人都能实时看到他人的卡片出现。</span>
+    </div>
+  </section>
+
+  <!-- 10 -->
+  <section class="guide-section" id="s-consolidate">
+    <h2><span class="lang-en">10 · Readiness &amp; consolidation</span><span class="lang-zh">10 · 就绪与合并</span></h2>
+    <p><span class="lang-en">When a stage's collecting is done, the team turns its many individual cards into one agreed summary — without the AI ever deciding for you:</span><span class="lang-zh">当某个阶段的收集完成后，团队会把众多个人卡片整合为一份达成一致的摘要——而 AI 从不替你做决定：</span></p>
+    <div class="guide-flow" aria-hidden="true">
+      <span class="step done"><span class="lang-en">Collecting</span><span class="lang-zh">收集中</span></span>
+      <span class="arrow">→</span>
+      <span class="step"><span class="lang-en">Everyone marks “ready”</span><span class="lang-zh">所有人标记「已完成」</span></span>
+      <span class="arrow">→</span>
+      <span class="step"><span class="lang-en">AI drafts a summary</span><span class="lang-zh">AI 起草摘要</span></span>
+      <span class="arrow">→</span>
+      <span class="step"><span class="lang-en">Team approves</span><span class="lang-zh">团队批准</span></span>
+      <span class="arrow">→</span>
+      <span class="step done"><span class="lang-en">Consolidated &amp; locked</span><span class="lang-zh">已合并并锁定</span></span>
+    </div>
+    <p><span class="lang-en">Each member ticks <strong>“ready”</strong> on the stage's team panel when their own cards are done. Then — per the approval rule — the AI drafts a consolidated summary, everyone sees it, and it's saved as a single attributed “Team (consolidated)” card only after it's approved. The leader can reopen a locked phase if more work is needed. Your individual cards are never replaced.</span><span class="lang-zh">每位成员在阶段的团队面板上，于自己卡片完成后勾选<strong>「已完成」</strong>。随后——依据审批规则——AI 起草一份合并摘要，所有人查看，唯有获批后才会保存为一张署名为「团队（已合并）」的卡片。若需要更多工作，组长可重新开放已锁定的阶段。你的个人卡片永远不会被替换。</span></p>
+  </section>
+
+  <!-- 11 -->
+  <section class="guide-section" id="s-canvases">
+    <h2><span class="lang-en">11 · Multiple canvases &amp; leaving</span><span class="lang-zh">11 · 多个画布与退出团队</span></h2>
+    <p><span class="lang-en">You can hold several canvases at once — one per team you're on, plus any solo ones. The <strong>Teams &amp; Canvases</strong> tab lists them; <span class="guide-key">Open</span> switches the active canvas, and <span class="guide-key">+ New solo canvas</span> starts a fresh one. Joining a team always creates a new canvas, so your current work is never overwritten.</span><span class="lang-zh">你可以同时拥有多个画布——每个所在团队一个，外加任意个人画布。<strong>团队与画布</strong>标签会列出它们；<span class="guide-key">打开</span> 切换当前画布，<span class="guide-key">+ 新建个人画布</span> 开启一个全新画布。加入团队总会创建一个新画布，因此你当前的工作绝不会被覆盖。</span></p>
+    <p><span class="lang-en"><strong>Leaving a team</strong> (the button at the bottom of the team panel) removes you from the roster for everyone, and turns that canvas into a solo one that keeps only the cards you added yourself.</span><span class="lang-zh"><strong>退出团队</strong>（团队面板底部的按钮）会把你从所有人的成员名单中移除，并把该画布变为个人画布，仅保留你自己添加的卡片。</span></p>
+  </section>
+
+  <!-- 12 -->
+  <section class="guide-section" id="s-data">
+    <h2><span class="lang-en">12 · Export, import &amp; saving</span><span class="lang-zh">12 · 导出、导入与保存</span></h2>
+    <p><span class="lang-en">Your work saves automatically in your browser (and, once you're on a team, in the cloud — the footer shows which). In <strong>Settings → Teams &amp; Canvases</strong>, <span class="guide-key">Export</span> saves the current canvas as a <span class="guide-key">.json</span> file; <span class="guide-key">Import</span> loads one into a brand-new canvas so it can't overwrite anything you're working on.</span><span class="lang-zh">你的工作会自动保存在浏览器中（一旦加入团队，也会保存到云端——页脚会显示当前状态）。在<strong>设置 → 团队与画布</strong>中，<span class="guide-key">导出</span> 会把当前画布保存为 <span class="guide-key">.json</span> 文件；<span class="guide-key">导入</span> 会将文件载入一个全新画布，因此不会覆盖你正在进行的任何工作。</span></p>
+  </section>
+
+  <!-- 13 -->
+  <section class="guide-section" id="s-tips">
+    <h2><span class="lang-en">13 · Tips &amp; FAQ</span><span class="lang-zh">13 · 技巧与常见问题</span></h2>
+    <ul class="guide-steps">
+      <li><span class="lang-en"><strong>Switch language</strong> anytime with the EN / 中文 toggle in the header — it applies to the whole app.</span><span class="lang-zh">随时用页眉的 EN / 中文 切换<strong>语言</strong>——它对整个应用生效。</span></li>
+      <li><span class="lang-en"><strong>Is my API key safe?</strong> It lives only in this browser and is excluded from every export.</span><span class="lang-zh"><strong>我的 API 密钥安全吗？</strong>它只保存在本浏览器中，并且在每次导出时都会被排除。</span></li>
+      <li><span class="lang-en"><strong>Do I have to use AI?</strong> No — every feature works without a key; the AI only ever assists.</span><span class="lang-zh"><strong>必须使用 AI 吗？</strong>不必——每个功能都可在没有密钥的情况下使用；AI 始终只是辅助。</span></li>
+      <li><span class="lang-en"><strong>Lost a teammate's card?</strong> Nothing is deleted when someone leaves — their entries stay on the team, just no longer attributed.</span><span class="lang-zh"><strong>某位队友的卡片不见了？</strong>有人退出时不会删除任何内容——他们的条目仍留在团队中，只是不再显示署名。</span></li>
+      <li><span class="lang-en"><strong>Stuck on where to start?</strong> Name the project, write a challenge, open Discover, and add your first observation. The rest follows the strip at the top.</span><span class="lang-zh"><strong>不知从何开始？</strong>命名项目、写下挑战、打开「探索」、添加你的第一条观察。其余的按页面顶部的导航条依次进行即可。</span></li>
+    </ul>
+    <p class="guide-lede" style="margin-top:24px;">
+      <span class="lang-en">That's the whole tour. Head <a href="index.html" data-i18n="crumb.canvas">Home</a> to start, or open <strong>⚙ Settings</strong> to set up your name and (optionally) an AI key.</span>
+      <span class="lang-zh">这就是完整的导览。前往<a href="index.html" data-i18n="crumb.canvas">主页</a>开始，或打开<strong>⚙ 设置</strong>来设置你的姓名以及（可选的）AI 密钥。</span>
+    </p>
+  </section>
+
+  <nav class="doc-nav"><a href="index.html">← <span data-i18n="nav.canvas">Home</span></a><a href="report.html"><span data-i18n="nav.report">Report</span> →</a></nav>
+</article>
+</main>
+
+<script src="lang.js"></script>
+<script src="store.js"></script>
+<script src="llm.js"></script>
+<script src="glossary.js"></script>
+<script>var state = loadState();</script>
+<script src="sync.js"></script>
+<script src="team.js"></script>
+<script src="settings.js"></script>
+<footer class="app-footer">
+  <a href="index.html" data-i18n="footer.tagline.link">Design Thinking Canvas</a> — <span data-i18n="footer.tagline">Double Diamond tutorial</span>
+  <span class="footer-copyright" data-i18n="footer.copyright">© Shimon Shmueli</span>
+</footer>
+</body>
+</html>
