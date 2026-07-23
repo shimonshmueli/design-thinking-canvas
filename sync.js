@@ -96,12 +96,13 @@ async function apiFetch(path, opts) {
  *  cards as this leader's own attributed entries (nothing is silently merged from anyone
  *  else — there isn't anyone else yet). Returns { projectId, joinCode }. */
 async function syncCreateProject(name) {
+  const about = typeof loadLLMConfig === "function" ? (loadLLMConfig().about || "").trim() : "";
   const created = await apiFetch("/api/projects", { method: "POST", body: JSON.stringify({ title: state.title }) });
   saveSyncProject({ projectId: created.projectId, joinCode: created.joinCode });
 
   const team = await apiFetch(`/api/projects/${created.projectId}/team`, {
     method: "POST",
-    body: JSON.stringify({ name }),
+    body: JSON.stringify({ name, about }),
   });
   saveSyncCreds(created.projectId, { memberId: team.member.id, secret: team.secret, name: team.member.name, role: team.member.role });
 
@@ -126,12 +127,13 @@ async function syncCreateProject(name) {
  *  importing them (see team.js), since they belong to whatever this browser was working on
  *  before, not necessarily to the project being joined. */
 async function syncJoinByCode(code, name) {
+  const about = typeof loadLLMConfig === "function" ? (loadLLMConfig().about || "").trim() : "";
   const lookup = await apiFetch(`/api/projects?code=${encodeURIComponent(code)}`, { method: "GET" });
   saveSyncProject({ projectId: lookup.projectId, joinCode: code.toUpperCase() });
 
   const team = await apiFetch(`/api/projects/${lookup.projectId}/team`, {
     method: "POST",
-    body: JSON.stringify({ name }),
+    body: JSON.stringify({ name, about }),
   });
   saveSyncCreds(lookup.projectId, { memberId: team.member.id, secret: team.secret, name: team.member.name, role: team.member.role });
 

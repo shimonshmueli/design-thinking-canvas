@@ -149,6 +149,11 @@ function renderEntry(card) {
     const author = document.createElement("span");
     author.className = "card-author";
     author.textContent = card.authorName;
+    const member = (state.team.members || []).find((m) => m.id === card.authorId);
+    if (member && (member.about || "").trim()) {
+      author.title = member.about.trim(); // hover shows the teammate's "about yourself"
+      author.classList.add("has-about");
+    }
     meta.appendChild(author);
   }
 

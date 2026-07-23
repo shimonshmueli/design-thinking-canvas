@@ -32,19 +32,46 @@
     wireHandlers(overlay);
   }
 
+  function myIdentityFromSettings() {
+    const cfg = typeof loadLLMConfig === "function" ? loadLLMConfig() : {};
+    return { name: (cfg.name || "").trim(), about: (cfg.about || "").trim() };
+  }
+
   function renderSoloPanel() {
-    return `
-      <div class="settings-panel" role="dialog" aria-modal="true" aria-label="${t("team.title")}">
+    const { name, about } = myIdentityFromSettings();
+    const head = `
         <div class="settings-head">
           <h2>${t("team.title")}</h2>
           <button type="button" class="btn btn-ghost" id="team-close" aria-label="${t("team.close")}">✕</button>
-        </div>
+        </div>`;
+
+    // Your identity in a team comes from Settings (name + "about yourself"). Require a name
+    // before a team can be created or joined — no separate name entry here.
+    if (!name) {
+      return `
+      <div class="settings-panel" role="dialog" aria-modal="true" aria-label="${t("team.title")}">
+        ${head}
         <p class="workspace-hint">${t("team.soloHint")}</p>
+        <div class="team-settings-required">
+          <p>${t("team.settingsRequired")}</p>
+          <button type="button" class="btn btn-add" id="team-open-settings">${t("team.openSettings")}</button>
+        </div>
+      </div>`;
+    }
+
+    const identityLine = `
+        <p class="team-identity-line">${t("team.joinAs")}
+          <strong${about ? ` title="${escapeHtml(about)}"` : ""}>${escapeHtml(name)}</strong>
+          — <a href="#" id="team-edit-identity">${t("team.editInSettings")}</a>
+        </p>`;
+
+    return `
+      <div class="settings-panel" role="dialog" aria-modal="true" aria-label="${t("team.title")}">
+        ${head}
+        <p class="workspace-hint">${t("team.soloHint")}</p>
+        ${identityLine}
 
         <h3 class="settings-subhead">${t("team.createLabel")}</h3>
-        <label class="settings-field">${t("team.yourNameLabel")}
-          <input id="team-create-name" type="text" placeholder="${t("team.createPlaceholder")}" autocomplete="name">
-        </label>
         <div class="settings-actions">
           <button type="button" class="btn btn-add" id="team-create-btn">${t("team.createButton")}</button>
           <span class="assist-status" id="team-create-status"></span>
@@ -53,9 +80,6 @@
         <h3 class="settings-subhead">${t("team.joinHeading")}</h3>
         <label class="settings-field">${t("team.joinCodeLabel")}
           <input id="team-join-code" type="text" maxlength="6" placeholder="ABC123" autocomplete="off" style="text-transform:uppercase">
-        </label>
-        <label class="settings-field">${t("team.yourNameLabel")}
-          <input id="team-join-name" type="text" placeholder="${t("team.createPlaceholder")}" autocomplete="name">
         </label>
         <div class="settings-actions">
           <button type="button" class="btn" id="team-join-btn">${t("team.joinButton")}</button>
@@ -72,13 +96,14 @@
     const rule = state.team?.settings?.approvalRule || "leader";
 
     const roster = (state.team?.members || [])
-      .map(
-        (m) => `
+      .map((m) => {
+        const about = (m.about || "").trim();
+        return `
         <li class="team-member-row">
-          <span class="team-member-name">${escapeHtml(m.name)}</span>
+          <span class="team-member-name${about ? " has-about" : ""}"${about ? ` title="${escapeHtml(about)}"` : ""}>${escapeHtml(m.name)}</span>
           <span class="team-role-badge ${m.role}">${m.role === "leader" ? t("team.roleLeader") : t("team.roleMember")}</span>
-        </li>`
-      )
+        </li>`;
+      })
       .join("");
 
     return `
@@ -143,12 +168,20 @@
       }, 1600);
     });
 
+    // Open Settings from the "set your name first" prompt or the "edit in Settings" link.
+    overlay.querySelector("#team-open-settings")?.addEventListener("click", () => {
+      if (typeof openSettings === "function") openSettings();
+    });
+    overlay.querySelector("#team-edit-identity")?.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (typeof openSettings === "function") openSettings();
+    });
+
     overlay.querySelector("#team-create-btn")?.addEventListener("click", async () => {
-      const input = overlay.querySelector("#team-create-name");
       const statusEl = overlay.querySelector("#team-create-status");
-      const name = input.value.trim();
+      const name = myIdentityFromSettings().name;
       if (!name) {
-        input.focus();
+        if (typeof openSettings === "function") openSettings();
         return;
       }
       statusEl.textContent = t("team.working");
@@ -165,12 +198,15 @@
 
     overlay.querySelector("#team-join-btn")?.addEventListener("click", async () => {
       const codeInput = overlay.querySelector("#team-join-code");
-      const nameInput = overlay.querySelector("#team-join-name");
       const statusEl = overlay.querySelector("#team-join-status");
       const code = codeInput.value.trim();
-      const name = nameInput.value.trim();
-      if (!code || !name) {
-        (code ? nameInput : codeInput).focus();
+      const name = myIdentityFromSettings().name;
+      if (!name) {
+        if (typeof openSettings === "function") openSettings();
+        return;
+      }
+      if (!code) {
+        codeInput.focus();
         return;
       }
       statusEl.textContent = t("team.working");
@@ -256,4 +292,9 @@
   updateButtons();
   window.updateTeamButtons = updateButtons;
   document.addEventListener("dtc-team-changed", updateButtons);
+  // If the person edits their name/about in Settings while the team panel is open, reflect it.
+  document.addEventListener("dtc-settings-changed", () => {
+    const overlay = document.getElementById("team-modal");
+    if (overlay && !overlay.hidden) render();
+  });
 })();

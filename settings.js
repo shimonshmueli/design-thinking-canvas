@@ -83,6 +83,7 @@
       saveLLMConfig(cfg);
       overlay.querySelector("#settings-status").textContent = t("settings.saved");
       updateButtons();
+      document.dispatchEvent(new CustomEvent("dtc-settings-changed"));
       setTimeout(closeSettings, 500);
     });
   }

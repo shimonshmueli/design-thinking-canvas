@@ -20,6 +20,8 @@ const PREVIEW_COUNT = 3;
 let state = loadState();
 
 const titleInput = document.getElementById("project-title");
+const titleDisplay = document.getElementById("project-title-display");
+const editTitleBtn = document.getElementById("edit-title");
 const saveStatus = document.getElementById("save-status");
 const board = document.getElementById("board");
 const challengeInput = document.getElementById("foundation-challenge");
@@ -29,7 +31,7 @@ const challengeStatement = document.getElementById("challenge-statement");
 init();
 
 function init() {
-  titleInput.value = state.title;
+  renderTitle();
   challengeInput.value = state.foundations.challenge;
   themesInput.value = state.foundations.themes;
   challengeStatement.value = state.challenge;
@@ -68,6 +70,14 @@ function init() {
     state.title = titleInput.value;
     persist();
   });
+  titleInput.addEventListener("blur", endTitleEdit);
+  titleInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      titleInput.blur();
+    }
+  });
+  editTitleBtn.addEventListener("click", beginTitleEdit);
 
   challengeInput.addEventListener("input", () => {
     state.foundations.challenge = challengeInput.value;
@@ -79,27 +89,15 @@ function init() {
     persist();
   });
 
-  document.getElementById("clear-canvas").addEventListener("click", () => {
-    const total = PHASES.reduce((n, p) => n + state.cards[p].length, 0);
-    if (total === 0) return;
-    if (confirm(t("confirm.clearAll").replace("{n}", total))) {
-      PHASES.forEach((p) => (state.cards[p] = []));
-      persist();
-      renderAll();
-    }
-  });
-
-  document.getElementById("export-json").addEventListener("click", exportJSON);
-
-  const importInput = document.getElementById("import-file");
-  document.getElementById("import-json").addEventListener("click", () => importInput.click());
-  importInput.addEventListener("change", importJSON);
-
   initIntroCard();
   initSelectionCollapse();
-  initDataMenu();
   updateSaveStatusMode();
-  document.addEventListener("dtc-team-changed", updateSaveStatusMode);
+  updateTitleEditability();
+  document.addEventListener("dtc-team-changed", () => {
+    updateSaveStatusMode();
+    updateTitleEditability();
+    renderTitle();
+  });
 
   // Refresh summaries when returning from a stage page (including bfcache restores).
   window.addEventListener("pageshow", (e) => {
@@ -131,7 +129,7 @@ function initTitleGate() {
       return;
     }
     state.title = val;
-    titleInput.value = val;
+    renderTitle();
     persist();
     modal.hidden = true;
   }
@@ -145,7 +143,8 @@ function initTitleGate() {
 
 function refreshFromStorage() {
   state = loadState();
-  titleInput.value = state.title;
+  renderTitle();
+  updateTitleEditability();
   challengeInput.value = state.foundations.challenge;
   themesInput.value = state.foundations.themes;
   challengeStatement.value = state.challenge;
@@ -450,72 +449,51 @@ function initSelectionCollapse() {
   });
 }
 
-/** Header "Data ▾" dropdown (Export / Import / Clear): close on outside click or after use. */
-function initDataMenu() {
-  const menu = document.getElementById("data-menu");
-  if (!menu) return;
-  document.addEventListener("click", (e) => {
-    if (menu.open && !menu.contains(e.target)) menu.open = false;
-  });
-  menu.querySelectorAll(".header-menu-list button").forEach((b) =>
-    b.addEventListener("click", () => (menu.open = false))
-  );
+/* ---------------- project title: display + gated edit ---------------- */
+
+function renderTitle() {
+  titleDisplay.textContent = state.title || DEFAULT_TITLE;
+  titleInput.value = state.title;
 }
 
-function exportJSON() {
-  // Complete canvas export: all project state plus user settings — except the API key.
-  const cfg = loadLLMConfig();
-  const payload = {
-    _format: "design-thinking-canvas-export-v1",
-    schemaVersion: 2,
-    exported: new Date().toISOString(),
-    ...state,
-    settings: {
-      name: cfg.name || "",
-      about: cfg.about || "",
-      provider: cfg.provider || "",
-      model: cfg.model || "",
-    },
-  };
-  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  const safeName = (state.title || "canvas").trim().replace(/[^a-z0-9\-_ ]/gi, "").replace(/\s+/g, "-") || "canvas";
-  a.href = url;
-  a.download = `${safeName}.json`;
-  a.click();
-  URL.revokeObjectURL(url);
+/** Solo, you own the project and may rename it. In a team, only the leader may. */
+function canEditTitle() {
+  if (cloudConnected()) {
+    const me = typeof currentIdentity === "function" ? currentIdentity(state) : null;
+    return !!me && me.role === "leader";
+  }
+  return true;
 }
 
-function importJSON(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = () => {
-    try {
-      const parsed = JSON.parse(reader.result);
-      if (typeof parsed.schemaVersion === "number" && parsed.schemaVersion > 2) {
-        if (!confirm(t("confirm.importNewer"))) {
-          e.target.value = "";
-          return;
-        }
-      }
-      state = normalizeState(parsed);
-      // Restore user settings if present in the export — never touches the stored API key.
-      if (parsed.settings && typeof parsed.settings === "object") {
-        const cfg = loadLLMConfig();
-        ["name", "about", "provider", "model"].forEach((k) => {
-          if (typeof parsed.settings[k] === "string") cfg[k] = parsed.settings[k];
-        });
-        saveLLMConfig(cfg);
-        if (window.updateSettingsButtons) window.updateSettingsButtons();
-      }
-      persist();
-      refreshFromStorage();
-    } catch (err) {
-      alert(t("alert.importInvalid"));
-    }
-  };
-  reader.readAsText(file);
-  e.target.value = "";
+function beginTitleEdit() {
+  if (!canEditTitle()) return;
+  titleDisplay.hidden = true;
+  editTitleBtn.hidden = true;
+  titleInput.hidden = false;
+  titleInput.focus();
+  titleInput.select();
 }
+
+function endTitleEdit() {
+  titleInput.hidden = true;
+  titleDisplay.hidden = false;
+  editTitleBtn.hidden = !canEditTitle();
+  renderTitle();
+}
+
+/** Show/hide the ✎ Edit affordance depending on whether this person may rename the project,
+ *  and bail out of edit mode if permission was just lost (e.g. after joining as a member). */
+function updateTitleEditability() {
+  const can = canEditTitle();
+  editTitleBtn.hidden = !can;
+  editTitleBtn.title = can ? t("header.editTitle.title") : t("header.editTitle.leaderOnly");
+  if (!can && !titleInput.hidden) {
+    titleInput.hidden = true;
+    titleDisplay.hidden = false;
+    renderTitle();
+  }
+}
+
+// Export / import / clear were removed from the UI — the project lives in the browser
+// (and, once a team is started, in the cloud), so the manual .json round-trip is no longer
+// part of the flow.

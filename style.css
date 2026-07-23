@@ -53,7 +53,7 @@ body {
 /* ---------- Header ---------- */
 
 .app-header {
-  padding: 20px 32px 12px;
+  padding: 22px 32px 18px;
   background: var(--panel);
   border-bottom: 1px solid var(--border);
 }
@@ -65,27 +65,56 @@ body {
   gap: 16px;
 }
 
+.project-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.project-title-display {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ink);
+  padding: 4px 6px;
+  border-radius: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 46vw;
+}
+
 .project-title {
   font-size: 22px;
   font-weight: 700;
-  border: none;
-  background: transparent;
+  border: 1px solid var(--border);
+  background: var(--bg);
   color: var(--ink);
   padding: 4px 6px;
   border-radius: 6px;
   min-width: 200px;
 }
 
-.project-title:hover,
 .project-title:focus {
   background: var(--bg);
-  outline: none;
+  outline: 2px solid color-mix(in srgb, var(--discover) 45%, transparent);
+}
+
+.btn-title-edit {
+  flex-shrink: 0;
+  padding: 5px 10px;
+  font-size: 12px;
+  color: var(--ink-soft);
 }
 
 .app-subtitle {
-  margin: 4px 0 0;
+  margin: 12px 0 0;
   color: var(--ink-soft);
   font-size: 12.5px;
+}
+
+.app-header > .process-nav {
+  margin-top: 14px;
 }
 
 .header-actions {
@@ -1095,6 +1124,22 @@ html[data-lang="zh"] :lang(zh) { line-height: 1.9; }
 .selection-body { margin-top: 14px; }
 
 .team-ready-explain { margin: 8px 0 12px; }
+
+/* Settings-derived team identity + "about yourself" hover hints */
+.team-identity-line {
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin: 4px 0 14px;
+}
+.team-identity-line strong { color: var(--ink); }
+.team-settings-required {
+  padding: 14px;
+  background: var(--bg);
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+}
+.team-settings-required p { margin: 0 0 10px; font-size: 13px; color: var(--ink-soft); }
+.has-about { cursor: help; border-bottom: 1px dotted currentColor; }
 
 /* Stage/tool pages: jump-to-workspace link + collapsible tool grid */
 .workspace-jump {

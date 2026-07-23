@@ -27,20 +27,15 @@
 
 <header class="app-header">
   <div class="header-top">
-    <input id="project-title" class="project-title" type="text" value="Untitled Project" spellcheck="false">
+    <div class="project-title-wrap">
+      <span id="project-title-display" class="project-title-display">Untitled Project</span>
+      <input id="project-title" class="project-title" type="text" value="Untitled Project" spellcheck="false" hidden>
+      <button id="edit-title" class="btn btn-ghost btn-title-edit" data-i18n="header.editTitle" data-i18n-title="header.editTitle.title" title="Rename project">✎ Edit</button>
+    </div>
     <div class="header-actions">
       <span class="lang-switch-mount"></span>
       <button id="open-team" class="btn btn-ghost" title="Team roster and cloud sync">👥 Team</button>
       <button id="open-settings" class="btn btn-ghost" data-i18n="header.settings" data-i18n-title="header.settings" title="Your name, LLM provider, and API key">⚙ Settings</button>
-      <details class="header-menu" id="data-menu">
-        <summary class="btn btn-ghost" data-i18n="header.data" data-i18n-title="header.data.title" title="Export, import, or clear this canvas">Data ▾</summary>
-        <div class="header-menu-list">
-          <button id="export-json" class="btn btn-ghost" data-i18n="header.export" data-i18n-title="header.export.title" title="Save canvas as a .json file">Export</button>
-          <button id="import-json" class="btn btn-ghost" data-i18n="header.import" data-i18n-title="header.import.title" title="Load a previously exported .json file">Import</button>
-          <input id="import-file" type="file" accept="application/json" hidden>
-          <button id="clear-canvas" class="btn btn-danger" data-i18n="header.clear" data-i18n-title="header.clear.title" title="Delete every card">Clear</button>
-        </div>
-      </details>
     </div>
   </div>
   <p class="app-subtitle" data-i18n="app.subtitle">Double Diamond &amp; Design Thinking Methods — Discover → Define → Ideate → Make → Evaluate → Develop → Reflect &amp; Improve</p>

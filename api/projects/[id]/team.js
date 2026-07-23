@@ -7,8 +7,8 @@ module.exports = withHandler(async (req, res, pool, body) => {
   if (req.method === "POST") {
     // Creating and joining are the same operation server-side: the first member of a
     // project becomes its leader, everyone after joins as a member.
-    const { name } = body;
-    const result = await logic.createOrJoinTeam(pool, id, name);
+    const { name, about } = body;
+    const result = await logic.createOrJoinTeam(pool, id, name, about);
     res.status(201).json(result);
     return;
   }

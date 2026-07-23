@@ -22,10 +22,14 @@ CREATE TABLE IF NOT EXISTS members (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
+  about TEXT NOT NULL DEFAULT '',
   role TEXT NOT NULL DEFAULT 'member' CHECK (role IN ('leader', 'member')),
   secret TEXT NOT NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+-- Backfill for databases whose members table predates the `about` column.
+ALTER TABLE members ADD COLUMN IF NOT EXISTS about TEXT NOT NULL DEFAULT '';
 
 CREATE INDEX IF NOT EXISTS idx_members_project ON members(project_id);
 

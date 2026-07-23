@@ -159,6 +159,11 @@ function renderCard(card) {
     const author = document.createElement("span");
     author.className = "card-author";
     author.textContent = card.authorName;
+    const member = (state.team.members || []).find((m) => m.id === card.authorId);
+    if (member && (member.about || "").trim()) {
+      author.title = member.about.trim(); // hover shows the teammate's "about yourself"
+      author.classList.add("has-about");
+    }
     meta.appendChild(author);
   }
 
@@ -314,11 +319,13 @@ function renderTeamPhasePanel() {
     .map((m) => {
       const ready = isReady(state, phase, m.id);
       const mine = me && me.id === m.id;
+      const about = (m.about || "").trim();
+      const nameSpan = `<span class="team-member-name${about ? " has-about" : ""}"${about ? ` title="${about.replace(/"/g, "&quot;")}"` : ""}>${m.name}</span>`;
       return `
         <li class="team-ready-row">
           <label>
             <input type="checkbox" class="team-ready-check" data-id="${m.id}" ${ready ? "checked" : ""} ${mine ? "" : "disabled"}>
-            ${m.name}${mine ? " " + t("team.readyYou") : ""}
+            ${nameSpan}${mine ? " " + t("team.readyYou") : ""}
           </label>
         </li>`;
     })
